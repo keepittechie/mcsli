@@ -23,7 +23,7 @@ git clone https://github.com/keepittechie/Minecraft-Server-Linux-Installer.git
 Change to the directory containing the script.
 
 ```bash
-cd [script directory]
+cd ./Minecraft-Server-Linux-Installer
 ```
 3. Run the Installation Script:
 Execute the install.sh script. The script must be run with root privileges.
