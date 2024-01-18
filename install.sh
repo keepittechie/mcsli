@@ -55,6 +55,7 @@ Description=Minecraft Server
 After=network.target
 
 [Service]
+WorkingDirectory=$MINECRAFT_DIR
 User=root
 Nice=5
 ExecStart=/usr/bin/java -Xms1024M -Xmx4G -jar $MINECRAFT_DIR/$SERVER_JAR nogui
