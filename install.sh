@@ -1,5 +1,31 @@
 #!/bin/bash
 
+# Minecraft Server Installation Script
+# Created by: Josh
+# YouTube Channel: KeepItTechie
+# Blog: https://docs.keepittechie.com/
+
+# Purpose:
+# This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04.
+# It simplifies the process of getting a Minecraft server up and running by handling tasks such as:
+# - Installing necessary packages (Java, wget)
+# - Opening ports for Minecraft and SSH
+# - Downloading and setting up the Minecraft server JAR file
+# - Accepting the Minecraft EULA
+# - Setting file ownership and permissions for security
+# - Creating and configuring a systemd service for easy server management
+
+# This script was created to make it easier for Linux users and Minecraft enthusiasts to host
+# their own Minecraft server. It minimizes the manual configuration required and provides a
+# quick and efficient way to get a Minecraft server operational.
+
+# Please review the script before running it on your server to ensure it meets your requirements
+# and to understand the changes it will make. Customize the server.properties file as needed
+# to configure your Minecraft server settings.
+
+# Full details and instructions can be found on my GitHub repository:
+# https://github.com/keepittechie/mcsli
+
 # ANSI color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
