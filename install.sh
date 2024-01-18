@@ -2,7 +2,7 @@
 
 # Minecraft Server Installation Script
 # Created by: Josh
-# YouTube Channel: KeepItTechie
+# YouTube Channel: https://youtube.com/@KeepItTechie
 # Blog: https://docs.keepittechie.com/
 
 # Purpose:
