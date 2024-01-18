@@ -18,7 +18,7 @@ This script is designed to automate the installation and setup of a Minecraft se
 Clone the repository containing the script to your server.
 
 ```bash
-git clone https://github.com/keepittechie/Minecraft-Server-Linux-Installer.git
+git clone https://github.com/keepittechie/mcsli.git
 ```
 2. **Navigate to the Script Directory:**
 
