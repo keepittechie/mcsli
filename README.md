@@ -32,7 +32,7 @@ cd ./mcsli
 Execute the install.sh script. The script must be run with root privileges.
 
 ```bash
-sudo ./install.sh
+sudo sh ./install.sh
 ```
 4. **Review and Customize server.properties:**
 
