@@ -1,5 +1,4 @@
-# Minecraft-Server-Linux-Installer
-Minecraft Server Linux Installer
+# Minecraft Server Linux Installer
 
 ## Introduction/Overview
 This script is designed to automate the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server up and running by executing a series of commands to install necessary packages, configure the server, and set up a systemd service for easy management.
