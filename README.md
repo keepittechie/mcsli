@@ -20,6 +20,12 @@ This script is designed to automate the installation and setup of a Minecraft se
 - Creates a systemd service for the Minecraft server for easy starting, stopping, and restarting.
 - Provides instructions for further customization and manual steps required after installation.
 
+## Distributions Tested
+
+- **Ubuntu Server 22.04**
+- **Ubuntu Server 20.04**
+- **Ubuntu Server 18.04**
+
 ## Instructions on Using the Script
 1. **Clone the Repository:**
 
