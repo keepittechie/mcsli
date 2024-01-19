@@ -44,7 +44,7 @@ sudo ufw allow OpenSSH # Open port for SSH
 # Check if connected via SSH and enable UFW (Uncomplicated Firewall)
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     echo "Connected via SSH. Automatically responding to firewall prompt..."
-    yes | sudo ufw enable
+    yes | sudo ufw --force enable
 else
     echo "Not connected via SSH. Enabling firewall..."
     sudo ufw enable
