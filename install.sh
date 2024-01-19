@@ -43,13 +43,29 @@ sudo add-apt-repository ppa:openjdk-r/ppa -y # Add Java PPA
 sudo apt update # Refresh package lists
 sudo apt install openjdk-17-jre-headless wget -y # Install Java and wget
 
-# Open Ports for Minecraft and SSH
-sudo ufw allow 25565 # Open port for Minecraft
-sudo ufw allow OpenSSH # Open port for SSH
+# Detect Operating System
+OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2)
 
-# Enable UFW (Uncomplicated Firewall) with --force to automatically answer yes
-echo "Enabling firewall..."
-sudo ufw --force enable
+# Install and configure firewall based on the operating system
+if [ "$OS_ID" = "debian" ]; then
+    echo "Debian system detected. Installing and configuring firewalld..."
+    sudo apt install firewalld -y
+    sudo systemctl start firewalld
+    sudo systemctl enable firewalld
+
+    sudo firewall-cmd --permanent --add-port=25565/tcp # Open port for Minecraft
+    sudo firewall-cmd --permanent --add-service=ssh # Open port for SSH
+
+    sudo firewall-cmd --reload
+else
+    echo "Ubuntu system detected. Configuring UFW..."
+    sudo ufw allow 25565 # Open port for Minecraft
+    sudo ufw allow OpenSSH # Open port for SSH
+
+    # Enable UFW (Uncomplicated Firewall) with --force to automatically answer yes
+    echo "Enabling firewall..."
+    sudo ufw --force enable
+fi
 
 # Define Minecraft server directory
 MINECRAFT_DIR="/opt/minecraft"
