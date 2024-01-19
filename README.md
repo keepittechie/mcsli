@@ -25,6 +25,7 @@ This script is designed to automate the installation and setup of a Minecraft se
 - **Ubuntu Server 22.04**
 - **Ubuntu Server 20.04**
 - **Ubuntu Server 18.04**
+- **Debian 11**
 
 ## Instructions on Using the Script
 1. **Clone the Repository:**
