@@ -32,6 +32,12 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Define the Minecraft service account name
+MINECRAFT_USER="minecraft"
+
+# Create the Minecraft service account
+sudo adduser --system --no-create-home --group "$MINECRAFT_USER"
+
 # Update and Install Necessary Packages
 sudo add-apt-repository ppa:openjdk-r/ppa -y # Add Java PPA
 sudo apt update # Refresh package lists
@@ -70,13 +76,13 @@ sudo java -Xms1024M -Xmx1024M -jar "$SERVER_JAR" nogui
 echo -e "${GREEN}Accepting EULA...${NC}"
 sudo sed -i 's/eula=false/eula=true/g' eula.txt
 
-# Change ownership to root
-echo -e "${GREEN}Changing ownership to root...${NC}"
-sudo chown root:root -R "$MINECRAFT_DIR"
+# Change ownership to minecraft user
+echo -e "${GREEN}Changing ownership to $MINECRAFT_USER...${NC}"
+sudo chown "$MINECRAFT_USER":"$MINECRAFT_USER" "$MINECRAFT_DIR"
 
 # Change permissions
 echo -e "${GREEN}Changing permissions...${NC}"
-sudo chmod 700 -R "$MINECRAFT_DIR"
+sudo chmod 750 "$MINECRAFT_DIR"
 
 # Create a Service File for Minecraft Server
 echo -e "${GREEN}Creating Minecraft service...${NC}"
@@ -86,7 +92,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=$MINECRAFT_DIR
-User=root
+User=$MINECRAFT_USER
 Nice=5
 ExecStart=/usr/bin/java -Xms1024M -Xmx4G -jar $MINECRAFT_DIR/$SERVER_JAR nogui
 Restart=on-failure
