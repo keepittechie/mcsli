@@ -41,7 +41,7 @@ sudo apt install openjdk-17-jre-headless wget -y # Install Java and wget
 sudo ufw allow 25565 # Open port for Minecraft
 sudo ufw allow OpenSSH # Open port for SSH
 
-# Enable UFW (Uncomplicated Firewall) with -y flag to automatically answer yes
+# Enable UFW (Uncomplicated Firewall) with --force to automatically answer yes
 echo "Enabling firewall..."
 sudo ufw --force enable
 
