@@ -41,14 +41,9 @@ sudo apt install openjdk-17-jre-headless wget -y # Install Java and wget
 sudo ufw allow 25565 # Open port for Minecraft
 sudo ufw allow OpenSSH # Open port for SSH
 
-# Check if connected via SSH and enable UFW (Uncomplicated Firewall)
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-    echo "Connected via SSH. Automatically responding to firewall prompt..."
-    sudo ufw --force enable
-else
-    echo "Not connected via SSH. Enabling firewall..."
-    sudo ufw enable
-fi
+# Enable UFW (Uncomplicated Firewall) with -y flag to automatically answer yes
+echo "Enabling firewall..."
+sudo ufw --force enable
 
 # Define Minecraft server directory
 MINECRAFT_DIR="/opt/minecraft"
