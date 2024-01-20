@@ -94,7 +94,7 @@ if [ "$SERVER_SOFTWARE" = "paper" ]; then
 
     # Download file
     wget -O "$SERVER_JAR" "$download_url"
-else [ "$SERVER_SOFTWARE" = "purpur" ]; then
+elif [ "$SERVER_SOFTWARE" = "purpur" ]; then
     # Construct download URL
     download_url="https://api.purpurmc.org/v2/purpur/"$SERVER_VERSION"/latest/download"
     
