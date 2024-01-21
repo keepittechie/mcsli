@@ -114,7 +114,7 @@ while true; do
 
         # Get the download url from mojang
         download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
-		echo download_url
+
         # Download file
         wget -O "$SERVER_JAR" "$download_url"
 		break
