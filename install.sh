@@ -117,7 +117,7 @@ while true; do
 
         # Download file
         wget -O "$SERVER_JAR" "$download_url"
-		break
+	break
     else
         echo "Not a valid response, try again"
     fi
