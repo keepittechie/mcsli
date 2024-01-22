@@ -122,6 +122,11 @@ while true; do
         echo "Not a valid response, try again"
     fi
 done
+
+# Write Minecraft server type and version to a text file
+echo "Minecraft Server Type: $SERVER_SOFTWARE" | sudo tee "$MINECRAFT_DIR/server_info.txt"
+echo "Minecraft Server Version: $SERVER_VERSION" | sudo tee -a "$MINECRAFT_DIR/server_info.txt"
+
 # Change to Minecraft directory
 cd "$MINECRAFT_DIR"
 
