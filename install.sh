@@ -35,6 +35,9 @@ NC='\033[0m' # No Color
 # Define the Minecraft service account name
 MINECRAFT_USER="minecraft"
 
+# Set server jar name, can be whatever you like
+SERVER_JAR="server.jar"
+
 # Create the Minecraft service account
 sudo adduser --system --no-create-home --group "$MINECRAFT_USER"
 
@@ -74,13 +77,51 @@ MINECRAFT_DIR="/opt/minecraft"
 sudo mkdir -p "$MINECRAFT_DIR" # Create the directory
 
 # Download the specific Minecraft server version
-SERVER_VERSION="1.20.4"
-SERVER_JAR="minecraft_server.${SERVER_VERSION}.jar"
-DOWNLOAD_URL="https://piston-data.mojang.com/v1/objects/8dd1a28015f51b1803213892b50b7b4fc76e594d/server.jar"
 
-echo -e "${GREEN}Downloading Minecraft server version $SERVER_VERSION...${NC}"
-sudo wget -O "$MINECRAFT_DIR/$SERVER_JAR" "$DOWNLOAD_URL" || { echo -e "${RED}Download failed! Exiting.${NC}"; exit 1; }
+# Loops over this section of code until a valid user response is obtained
+while true; do
+    # Ask the user about server version
+    echo -e "${BLUE}paper:${NC} Very widely used  (Will automatically install curl and jq if not installed already)"
+    echo -e "${GREEN}purpur:${NC} Fork of paper; adds greater customization and some performance gains"
+    echo -e "${RED}vanilla:${NC} Completely vanilla server from mojang. Other options are better but this supports snapshots. (Will automatically install curl and jq if not installed already)"
 
+    read -p "What server software would you like to use? " SERVER_SOFTWARE
+    read -p $'What version of minecraft would you like to use? (ex. 1.20.4): ' SERVER_VERSION
+
+    if [ "$SERVER_SOFTWARE" = "paper" ]; then
+        # Downloads curl and jq because of paper api limitations
+        sudo apt install curl jq -y
+
+        # Get the build number of the most recent build
+        latest_build="$(curl -sX GET "https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds -H 'accept: application/json' | jq '.builds [-1].build')"
+
+        # Construct download URL
+        download_url="https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds/"$latest_build"/downloads/"paper"-"$SERVER_VERSION"-"$latest_build".jar
+
+        # Download file
+        wget -O "$SERVER_JAR" "$download_url"
+        break  # Exit the loop if the download is successful
+    elif [ "$SERVER_SOFTWARE" = "purpur" ]; then
+        # Construct download URL
+        download_url="https://api.purpurmc.org/v2/purpur/"$SERVER_VERSION"/latest/download"
+
+        # Download file
+        wget -O "$SERVER_JAR" "$download_url"
+        break  # Exit the loop if the download is successful
+    elif [ "$SERVER_SOFTWARE" = "vanilla" ]; then
+        # Downloads curl and jq because of api limitations
+        sudo apt install curl jq -y
+
+        # Get the download url from mojang
+        download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
+
+        # Download file
+        wget -O "$SERVER_JAR" "$download_url"
+	break
+    else
+        echo "Not a valid response, try again"
+    fi
+done
 # Change to Minecraft directory
 cd "$MINECRAFT_DIR"
 
