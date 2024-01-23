@@ -35,9 +35,6 @@ NC='\033[0m' # No Color
 # Define the Minecraft service account name
 MINECRAFT_USER="minecraft"
 
-# Set server jar name, can be whatever you like
-SERVER_JAR="server.jar"
-
 # Create the Minecraft service account
 sudo adduser --system --no-create-home --group "$MINECRAFT_USER"
 
@@ -77,88 +74,126 @@ MINECRAFT_DIR="/opt/minecraft"
 sudo mkdir -p "$MINECRAFT_DIR" # Create the directory
 
 # Download the specific Minecraft server version
-
-# Loops over this section of code until a valid user response is obtained
 while true; do
-    # Ask the user about server version
-    echo -e "${BLUE}paper:${NC} Very widely used  (Will automatically install curl and jq if not installed already)"
-    echo -e "${GREEN}purpur:${NC} Fork of paper; adds greater customization and some performance gains"
-    echo -e "${RED}vanilla:${NC} Completely vanilla server from mojang. Other options are better but this supports snapshots. (Will automatically install curl and jq if not installed already)"
+    # Present options to the user
+    echo -e "${BLUE}1) paper:${NC} Very widely used (Will automatically install curl and jq if not installed already)"
+    echo -e "${GREEN}2) purpur:${NC} Fork of paper; adds greater customization and some performance gains"
+    echo -e "${RED}3) vanilla:${NC} Completely vanilla server from Mojang (Will automatically install curl and jq if not installed already)"
 
-    read -p "What server software would you like to use? " SERVER_SOFTWARE
-    read -p $'What version of minecraft would you like to use? (ex. 1.20.4): ' SERVER_VERSION
+    # Ask the user for their choice of server software
+    read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla): " SERVER_SOFTWARE_CHOICE
+    read -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
 
-    if [ "$SERVER_SOFTWARE" = "paper" ]; then
-        # Downloads curl and jq because of paper api limitations
-        sudo apt install curl jq -y
+    case $SERVER_SOFTWARE_CHOICE in
+        1)
+            SERVER_SOFTWARE="paper"
+            # Downloads curl and jq because of paper api limitations
+            sudo apt install curl jq -y
 
-        # Get the build number of the most recent build
-        latest_build="$(curl -sX GET "https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds -H 'accept: application/json' | jq '.builds [-1].build')"
+            # Get the build number of the most recent build
+            latest_build="$(curl -sX GET "https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds" -H 'accept: application/json' | jq '.builds[-1].build')"
 
-        # Construct download URL
-        download_url="https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds/"$latest_build"/downloads/"paper"-"$SERVER_VERSION"-"$latest_build".jar
+            # Construct download URL
+            download_url="https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds/$latest_build/downloads/paper-$SERVER_VERSION-$latest_build.jar"
+            
+            # Set SERVER_JAR after download
+            SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
+            
+            # Download file
+            wget -O "$SERVER_JAR" "$download_url"
+            
+            # Verify Download
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
+                exit 1
+            fi
 
-        # Download file
-        wget -O "$SERVER_JAR" "$download_url"
-        break  # Exit the loop if the download is successful
-    elif [ "$SERVER_SOFTWARE" = "purpur" ]; then
-        # Construct download URL
-        download_url="https://api.purpurmc.org/v2/purpur/"$SERVER_VERSION"/latest/download"
+            break
+            ;;
+        2)
+            SERVER_SOFTWARE="purpur"
+            # Construct download URL
+            download_url="https://api.purpurmc.org/v2/purpur/$SERVER_VERSION/latest/download"
 
-        # Download file
-        wget -O "$SERVER_JAR" "$download_url"
-        break  # Exit the loop if the download is successful
-    elif [ "$SERVER_SOFTWARE" = "vanilla" ]; then
-        # Downloads curl and jq because of api limitations
-        sudo apt install curl jq -y
+            # Set SERVER_JAR after download
+            SERVER_JAR="$MINECRAFT_DIR/purpur-$SERVER_VERSION.jar"
 
-        # Get the download url from mojang
-        download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
+            # Download file
+            wget -O "$SERVER_JAR" "$download_url"
+            
+            # Verify Download
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
+                exit 1
+            fi
 
-        # Download file
-        wget -O "$SERVER_JAR" "$download_url"
-	break
-    else
-        echo "Not a valid response, try again"
-    fi
+            break
+            ;;
+        3)
+            SERVER_SOFTWARE="vanilla"
+            # Downloads curl and jq because of mojang api limitations
+            sudo apt install curl jq -y
+
+            # Get the download url from mojang
+            download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
+
+            # Set SERVER_JAR after download
+            SERVER_JAR="$MINECRAFT_DIR/minecraft_server.$SERVER_VERSION.jar"
+
+            # Download file
+            wget -O "$SERVER_JAR" "$download_url"
+            
+            # Verify Download
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
+                exit 1
+            fi
+
+            break
+            ;;
+        *)
+            echo "Not a valid response, try again."
+            ;;
+    esac
 done
+
+# Set server jar name based on the user's choice
+SERVER_JAR="$MINECRAFT_DIR/$SERVER_SOFTWARE-$SERVER_VERSION.jar"
 
 # Write Minecraft server type and version to a text file
 echo "Minecraft Server Type: $SERVER_SOFTWARE" | sudo tee "$MINECRAFT_DIR/server_info.txt"
 echo "Minecraft Server Version: $SERVER_VERSION" | sudo tee -a "$MINECRAFT_DIR/server_info.txt"
+
+# Change ownership to minecraft user
+echo -e "${GREEN}Changing ownership to $MINECRAFT_USER...${NC}"
+sudo chown "$MINECRAFT_USER":"$MINECRAFT_USER" -R "$MINECRAFT_DIR"
+
+# Change permissions
+echo -e "${GREEN}Changing permissions...${NC}"
+sudo chmod 750 -R "$MINECRAFT_DIR"
 
 # Change to Minecraft directory
 cd "$MINECRAFT_DIR"
 
 # Run the server once to generate eula.txt and server.properties
 echo -e "${GREEN}Starting Minecraft server to generate eula.txt and server.properties...${NC}"
-sudo java -Xms1024M -Xmx1024M -jar "$SERVER_JAR" nogui
+sudo -u "$MINECRAFT_USER" java -Xms1024M -Xmx1024M -jar "$SERVER_JAR" nogui
 
 # Accept EULA by modifying eula.txt
 echo -e "${GREEN}Accepting EULA...${NC}"
 sudo sed -i 's/eula=false/eula=true/g' eula.txt
-
-# Change ownership to minecraft user
-echo -e "${GREEN}Changing ownership to $MINECRAFT_USER...${NC}"
-sudo chown "$MINECRAFT_USER":"$MINECRAFT_USER" "$MINECRAFT_DIR"
-
-# Change permissions
-echo -e "${GREEN}Changing permissions...${NC}"
-sudo chmod 750 "$MINECRAFT_DIR"
 
 # Create a Service File for Minecraft Server
 echo -e "${GREEN}Creating Minecraft service...${NC}"
 echo "[Unit]
 Description=Minecraft Server
 After=network.target
-
 [Service]
 WorkingDirectory=$MINECRAFT_DIR
 User=$MINECRAFT_USER
 Nice=5
-ExecStart=/usr/bin/java -Xms1024M -Xmx4G -jar $MINECRAFT_DIR/$SERVER_JAR nogui
+ExecStart=/usr/bin/java -Xms1024M -Xmx4G -jar $SERVER_JAR nogui
 Restart=on-failure
-
 [Install]
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/minecraft.service
 
@@ -188,5 +223,4 @@ echo -e "${GREEN}The server IP address is: $SERVER_IP"
 echo "You can connect to the Minecraft server using this IP and port 25565 (e.g., $SERVER_IP:25565)"
 echo "Note: Its recommended to set a static IP address for the server.${NC}"
 echo ""
-
 echo -e "${GREEN}Minecraft server installation and setup complete!${NC}"
