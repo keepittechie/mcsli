@@ -3,18 +3,12 @@
 
 FROM alpine:3
 
-# Define Java 17 home
 ENV JAVA_HOME=/opt/java/openjdk
-COPY --from=eclipse-temurin:17-alpine $JAVA_HOME $JAVA_HOME
+COPY --from=eclipse-temurin:17 $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-# Define Java 8 home
-# ENV JAVA_HOME_8=/opt/java/openjdk_8
-# COPY --from=eclipse-temurin:8-alpine /opt/java/openjdk /opt/java/openjdk_8
-# ENV PATH="${JAVA_HOME_8}/bin:${PATH}"
-
 # Install required packages
-RUN apk add --no-cache bash jq curl wget
+RUN apk add --no-cache bash jq curl wget 
 
 # Copies script
 COPY ./install-docker.sh /

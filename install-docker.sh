@@ -9,37 +9,48 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-JAVA_17_PATH=$PATH
-JAVA_8_PATH=/opt/java/openjdk_8/bin/java
-
 # Define Minecraft server directory
-MINECRAFT_DIR="/opt/minecraft/"
+MINECRAFT_DIR="/opt/minecraft"
 
-# Set server jar name
-SERVER_JAR=$MINECRAFT_DIR"server.jar"
-echo $SERVER_JAR
+JAVA_BINARY=/opt/java/openjdk/bin/java
 
 # Create Minecraft directory
 mkdir -p "$MINECRAFT_DIR" # Create the directory
 
+# Define required java version
+
+# if [[ $SERVER_VERSION == "1.17" || $SERVER_VERSION > "1.17" ]]; then
+#     JAVA_BINARY="$JAVA_BINARY_17"
+# else
+#     JAVA_BINARY="$JAVA_BINARY_8"
+# fi
+
 # Download the specific Minecraft server version
-if [ ! -e $MINECRAFT_DIR"server.jar" ]; then
+if [ ! -e "$MINECRAFT_DIR"/*.jar ]  || [ "grep -Po 'Minecraft Server Type: \K.*' "/opt/minecraft/server_info.txt"" != $SERVER_SOFTWARE ] || [ "grep -Po 'Minecraft Server Version: \K.*' "/opt/minecraft/server_info.txt"" != $SERVER_VERSION ]; then
     if [ "$SERVER_SOFTWARE" = "paper" ]; then
+        
         # Get the build number of the most recent build
         latest_build="$(curl -sX GET "https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds -H 'accept: application/json' | jq '.builds [-1].build')"
+        
         # Construct download URL
         download_url="https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds/"$latest_build"/downloads/"paper"-"$SERVER_VERSION"-"$latest_build".jar
+        
         # Download file
+        SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
         wget -O "$SERVER_JAR" "$download_url"
     elif [ "$SERVER_SOFTWARE" = "purpur" ]; then
         # Construct download URL
         download_url="https://api.purpurmc.org/v2/purpur/"$SERVER_VERSION"/latest/download"
+        
         # Download file
+        SERVER_JAR="$MINECRAFT_DIR/purpur-$SERVER_VERSION.jar"
         wget -O "$SERVER_JAR" "$download_url"
     elif [ "$SERVER_SOFTWARE" = "vanilla" ]; then
         # Get the download url from mojang
         download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
+        
         # Download file
+        SERVER_JAR="$MINECRAFT_DIR/vanilla-$SERVER_VERSION.jar"
         wget -O "$SERVER_JAR" "$download_url"
     fi
 fi
@@ -50,14 +61,10 @@ echo "Minecraft Server Version: $SERVER_VERSION" | tee -a "$MINECRAFT_DIR/server
 # Change to Minecraft directory
 cd "$MINECRAFT_DIR"
 
-
-echo $JAVA_17_PATH
-
 if [ ! -e $MINECRAFT_DIR"eula.txt" ]; then
-    $JAVA_17_PATH" -Xms1024M -Xmx1024M -jar "$SERVER_JAR" nogui"
+    "java -Xms1024M -Xmx1024M -jar "$SERVER_JAR" nogui"
     # Accept EULA by modifying eula.txt
     echo -e "${GREEN}Accepting EULA...${NC}"
-    echo $JAVA_HOME
     sed -i 's/eula=false/eula=true/g' eula.txt
 fi
 echo -e "${GREEN}Minecraft server installation and setup complete! Starting...${NC}"
