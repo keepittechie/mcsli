@@ -29,7 +29,8 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 
 ## Instructions on Using the 'install.sh' Script
 1. **Clone the Repository:**  
-   Clone the repository containing the script to your server.
+
+Clone the repository containing the script to your server.
    
 ```bash
    git clone https://github.com/keepittechie/mcsli.git
@@ -65,7 +66,8 @@ sudo systemctl start minecraft.service
 This script will install both mcsli & mcsli_webui.
 
 1. **Clone the Repository:**  
-   Clone the repository containing the script to your server.
+
+Clone the repository containing the script to your server.
    
 ```bash
    git clone https://github.com/keepittechie/mcsli.git
