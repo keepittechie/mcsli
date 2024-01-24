@@ -27,7 +27,7 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 - **Ubuntu Server 18.04**
 - **Debian 11**
 
-## Instructions on Using the 'install.sh' Script
+# Instructions on Using the 'install.sh' Script
 1. **Clone the Repository:**  
 
 Clone the repository containing the script to your server.
@@ -61,7 +61,7 @@ Manually start the Minecraft server using the following command:
 sudo systemctl start minecraft.service
 ```
 
-## Instructions on Using the 'install_full.sh' Script
+# Instructions on Using the 'install_full.sh' Script
 
 <img src="mcsli_webui.png" width="600">
 
