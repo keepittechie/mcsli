@@ -50,7 +50,7 @@ Execute the install.sh script. The script must be run with root privileges.
 sudo bash ./install.sh
 ```
 
-*Note: If the script doesn't run, this could be that the script is executable.*
+*Note: If the script doesn't run, this could be that the script is not executable.*
 ```bash
 chmod +x install.sh
 ```
@@ -99,7 +99,7 @@ Execute the install_full.sh script. The script must be run with root privileges.
 sudo bash ./install_full.sh
 ```
 
-*Note: If the script doesn't run, this could be that the script is executable.*
+*Note: If the script doesn't run, this could be that the script is not executable.*
 
 ```bash
 chmod +x install_full.sh
