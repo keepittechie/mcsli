@@ -27,7 +27,7 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 - **Ubuntu Server 18.04**
 - **Debian 11**
 
-## Instructions on Using the Script
+## Instructions on Using the 'install.sh' Script
 1. **Clone the Repository:**  
    Clone the repository containing the script to your server.
    
@@ -58,6 +58,54 @@ Manually start the Minecraft server using the following command:
 
 ```bash
 sudo systemctl start minecraft.service
+```
+
+## Instructions on Using the 'install_full.sh' Script
+
+This script will install both mcsli & mcsli_webui.
+
+1. **Clone the Repository:**  
+   Clone the repository containing the script to your server.
+   
+```bash
+   git clone https://github.com/keepittechie/mcsli.git
+```
+2. **Navigate to the Script Directory:**
+
+Change to the directory containing the script.
+
+```bash
+cd ./mcsli
+```
+3. **Run the Installation Script:**
+
+Execute the install_full.sh script. The script must be run with root privileges.
+
+```bash
+sudo bash ./install_full.sh
+```
+4. **Review and Customize server.properties:**
+
+After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
+
+5. **Start the Minecraft Server:**
+
+Manually start the Minecraft server using the following command:
+
+```bash
+sudo systemctl start minecraft.service
+```
+
+5. **Access the mcsli_webui:**
+
+To access the webui goto link:
+
+```bash
+http://localhost/5000
+```
+or
+```bash
+http://ip-address/5000
 ```
 
 ## Important Notes
