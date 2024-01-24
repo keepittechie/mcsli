@@ -110,6 +110,9 @@ or
 http://ip-address/5000
 ```
 
+![mcsli_webui](mcsli_webui.png)
+<img src="mcsli_webui.png" width="200" height="100">
+
 ## Important Notes
 
 - **Application Versions:** The script installs OpenJDK 17 and downloads the Minecraft server version specified in the script.
