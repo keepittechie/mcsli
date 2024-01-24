@@ -35,7 +35,14 @@ NC='\033[0m' # No Color
 # Define the Minecraft service account name
 MINECRAFT_USER="minecraft"
 
-# Create the Minecraft service account
+# Check if the Minecraft user already exists
+if id "$MINECRAFT_USER" &>/dev/null; then
+    echo "User $MINECRAFT_USER already exists. Using 'mcsli' instead."
+    MINECRAFT_USER="mcsli"
+fi
+
+# Create the Minecraft service account with the chosen name
+echo "Creating the Minecraft service account: $MINECRAFT_USER"
 sudo adduser --system --no-create-home --group "$MINECRAFT_USER"
 
 # Update and Install Necessary Packages
