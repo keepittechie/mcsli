@@ -63,6 +63,8 @@ sudo systemctl start minecraft.service
 
 ## Instructions on Using the 'install_full.sh' Script
 
+<img src="mcsli_webui.png" width="600">
+
 This script will install both mcsli & mcsli_webui.
 
 1. **Clone the Repository:**  
@@ -109,9 +111,6 @@ or
 ```bash
 http://ip-address/5000
 ```
-
-![mcsli_webui](mcsli_webui.png)
-<img src="mcsli_webui.png" width="600">
 
 ## Important Notes
 
