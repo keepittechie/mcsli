@@ -9,31 +9,30 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/keepittechie/mcsli?color=red)
 
 ## Introduction/Overview
-This script is designed to automate the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server up and running by executing a series of commands to install necessary packages, configure the server, and set up a systemd service for easy management.
+This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
 
 ## Features
-- Automatically adds the Java PPA and installs OpenJDK 17.
-- Opens necessary ports for Minecraft and SSH.
-- Downloads the specified version of the Minecraft server JAR file.
+- Adds Java PPA and installs OpenJDK 17.
+- Opens ports for Minecraft and SSH.
+- Offers a choice of Minecraft server software: Paper, Purpur, or Vanilla.
+- Downloads the specified version of the selected Minecraft server JAR file.
 - Automatically accepts the Minecraft EULA.
 - Sets file ownership and permissions for security.
-- Creates a systemd service for the Minecraft server for easy starting, stopping, and restarting.
-- Provides instructions for further customization and manual steps required after installation.
+- Creates a systemd service for easy server management.
+- Provides customization instructions for `server.properties`.
 
 ## Distributions Tested
-
 - **Ubuntu Server 22.04**
 - **Ubuntu Server 20.04**
 - **Ubuntu Server 18.04**
 - **Debian 11**
 
 ## Instructions on Using the Script
-1. **Clone the Repository:**
-
-Clone the repository containing the script to your server.
-
+1. **Clone the Repository:**  
+   Clone the repository containing the script to your server.
+   
 ```bash
-git clone https://github.com/keepittechie/mcsli.git
+   git clone https://github.com/keepittechie/mcsli.git
 ```
 2. **Navigate to the Script Directory:**
 
@@ -64,9 +63,8 @@ sudo systemctl start minecraft.service
 ## Important Notes
 
 - **Application Versions:** The script installs OpenJDK 17 and downloads the Minecraft server version specified in the script.
-- Updating the Minecraft Server JAR: The link to the Minecraft server JAR file will change over time as new versions are released. The script currently points to a specific version. Users are encouraged to check for the latest version and update the script accordingly.
+- **Updating the Minecraft Server JAR:** Check for the latest server versions and update the script as needed.
 - **Review the Script:** Always review the script's code before running it on your server to ensure it meets your requirements and to understand the changes it will make.
-- **server.properties File:** The server.properties file is located in /opt/minecraft. Customize this file to configure your Minecraft server settings.
 - **Static IP Address:** It is recommended to set a static IP address for your server to ensure that players can consistently connect to it.
 - **Security Considerations:** The script makes changes to system configurations and opens network ports. Run the script in a secure and controlled environment.
 
