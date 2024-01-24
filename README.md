@@ -52,11 +52,11 @@ sudo bash ./install.sh
 
 *Note: If the script doesn't run, this could be that the script is executable.*
 ```bash
-chmod +x install_full.sh
+chmod +x install.sh
 ```
 *Run again:*
 ```bash
-sudo bash ./install_full.sh
+sudo bash ./install.sh
 ```  
 
 4. **Review and Customize server.properties:**
