@@ -170,7 +170,7 @@ sudo chown "$MINECRAFT_USER":"$MINECRAFT_USER" -R "$MINECRAFT_DIR"
 
 # Change permissions
 echo -e "${GREEN}Changing permissions...${NC}"
-sudo chmod 750 -R "$MINECRAFT_DIR"
+sudo chmod 755 -R "$MINECRAFT_DIR"
 
 # Change to Minecraft directory
 cd "$MINECRAFT_DIR"
