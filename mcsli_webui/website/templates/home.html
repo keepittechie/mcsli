@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}MC Dashboard{% endblock %}
+
+{% block content %}
+<h1 style="text-align: left; color: #000000; font-family: 'Arial', sans-serif; margin-top: 20px; font-weight: bold;">Minecraft Dashboard</h1>
+<!-- <p style="color: darkgreen; font-weight: bold;"><span id="server-distribution">Unknown</span></p> -->
+<!-- <p style="color: darkgreen; font-weight: bold;"><span id="server-version">Unknown</span></p> -->
+
+<div id="server-info-container" style="padding: 20px; background-color: whitesmoke; border-radius: 10px; margin: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow-y: auto; max-width: 920px; max-height: 375px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Text Container -->
+        <div>
+            <p style="color: darkgreen; font-weight: bold;"><span id="server-distribution">Unknown</span></p>
+            <p style="color: darkgreen; font-weight: bold;"><span id="server-version">Unknown</span></p>
+            <p style="color: darkgreen; font-weight: bold;">Uptime: <span id="server-uptime">Unknown</span></p>
+        </div>
+
+        <!-- Image Container -->
+        <!-- <div id="server-image-container" style="padding-left: 20px;"> -->
+            <!-- <img id="server-image" src="/website/images/minecraft.jpg" alt="Server Image" style="max-width: 100px; max-height: 100px;"> -->
+        <!-- </div> -->
+    </div>
+</div>
+
+<div style="display: flex; justify-content: space-center; align-items: flex-start; flex-wrap: wrap;">
+
+    <!-- Minecraft Server Status container -->
+    <div id="server-status-container" style="font-family: monospace; color: black; background-color: whitesmoke; padding: 20px; border-radius: 10px; margin: 10px; width: 290px; height: 275px;">
+        <h2 style="color: black; font-weight: bold;">Server Status</h2>
+        <p>Server Type: <span id="server-type"></span></p>
+        <p>Version: <span id="mc-version"></span></p>
+        <p>Status: <span id="server-status"></span></p>
+        <input type="radio" id="status-up" name="serverStatus" disabled>
+        <label for="status-up" style="color: lime;">Up</label><br>
+        <input type="radio" id="status-down" name="serverStatus" disabled>
+        <label for="status-down" style="color: red;">Down</label>
+    </div>
+
+    <!-- Online Players Container -->
+    <div id="online-players-container" style="font-family: monospace; color: black; background-color: whitesmoke; padding: 20px; border-radius: 10px; margin: 10px; width: 290px; height: 275px;">
+        <h2 style="color: black; font-weight: bold;">Players</h2>
+        <p>Players Online: <span id="online-players"></span></p>
+        <!-- Container for player names -->
+        <div id="player-names-container" style="background-color: #f2f2f2; padding: 10px; border-radius: 5px; max-height: 150px; overflow-y: auto;">
+            <p>Names:</p>
+            <div id="player-names" style="font-size: 14px;"></div>
+        </div>
+    </div>
+    
+    <!-- Minecraft World Information Container -->
+    <div id="minecraft-world-info-container" style="font-family: monospace; color: black; background-color: whitesmoke; padding: 20px; border-radius: 10px; margin: 10px; width: 300px; height: 275px;">
+        <h2 style="color: black; font-weight: bold;">World Info</h2>
+        <p>Gamemode: <span id="gamemode"></span></p>
+        <p>Difficulty: <span id="difficulty"></span></p>
+        <p>Online Mode: <span id="online-mode"></span></p>
+        <p>Max World Size: <span id="max-world-size"></span></p>
+        <p>View Distance: <span id="view-distance"></span></p>
+    </div>
+
+    <!-- Statistics display container -->
+    <div id="stats-container" style="font-family: monospace; color: black; background-color: whitesmoke; padding: 20px; border-radius: 10px; margin: 10px; width: 600px; height: 275px;">
+        <h2 style="color: black; font-weight: bold;">Server Stats</h2>
+        <div>
+            <p>CPU Usage: <span id="cpu-usage"></span>% <div id="cpu-bar" style="background-color: grey; height: 20px; width: 100%; border-radius: 5px;"><div style="height: 100%; width: 0%; background-color: lime; border-radius: 5px;"></div></div></p>
+        </div>
+        <p>Memory Usage: <span id="memory-usage"></span>% (Used: <span id="memory-used"></span> GB, Total: <span id="memory-total"></span> GB)</p>
+        <p>Swap Usage: <span id="swap-usage"></span>% (Used: <span id="swap-used"></span> GB, Total: <span id="swap-total"></span> GB)</p>
+        <p>Load Average (1m, 5m, 15m): <span id="load-average"></span></p>
+    </div>
+    
+    <!-- Disk Space Usage Container -->
+    <div class="container" id="disk-space-container" style="font-family: monospace; color: black; background-color: whitesmoke; padding: 20px; border-radius: 10px; margin: 10px; width: 300px; height: 275px;">
+        <h2 style="color: black; font-weight: bold;">Disk Usage</h2>
+        <p>Total Disk Space: <span id="total-disk-space"></span> GB</p>
+        <p>Used Disk Space: <span id="used-disk-space"></span> GB</p>
+        <p>Free Disk Space: <span id="free-disk-space"></span> GB</p>
+        <div id="disk-space-bar" style="background-color: grey; height: 70px; width: 100%; border-radius: 5px;">
+            <div style="height: 100%; width: 0%; background-color: lime; border-radius: 5px;"></div>
+        </div>
+    </div>
+
+    <!-- Server Logs Container -->
+    <div id="server-logs-container" style="padding: 20px; background-color: whitesmoke; border-radius: 10px; margin: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow-y: auto; width: 920px; height: 350px;">
+        <h2 style="color: black; font-weight: bold; text-align: center;">Server Logs</h2>
+        <pre id="server-logs" style="white-space: pre-wrap; word-break: break-all; font-size: 12px; background-color: white; border: 1px solid black; border-radius: 5px; padding: 10px; overflow-y: auto; height: 80%;"></pre>
+    </div>
+
+    <!-- Network Usage Container -->
+    <div id="network-usage-container" class="container" style="font-family: monospace; color: black; background-color: whitesmoke; padding: 20px; border-radius: 10px; margin: 10px; width: 300px; height: 375px;">
+        <h2 style="color: black; font-weight: bold;">Network Usage</h2><br>
+        <p>Bandwidth Usage:<br><br> <span id="bandwidth-usage"></span></p><br>
+        <p>Active Connections: <span id="active-connections"></span></p><br>
+        <p>Unusual Activity: <span id="unusual-activity"></span></p>
+    </div>
+
+    <!-- Network Traffic Chart Container -->
+    <div id="network-traffic-chart-container" style="padding: 20px; background-color: whitesmoke; border-radius: 10px; margin: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); width: 600px; height: 375px;">
+        <h2 style="color: black; font-weight: bold; text-align: center;">Network Traffic</h2>
+        <canvas id="networkTrafficChart"></canvas>
+    </div>
+
+</div>
+
+{% endblock %}
+
