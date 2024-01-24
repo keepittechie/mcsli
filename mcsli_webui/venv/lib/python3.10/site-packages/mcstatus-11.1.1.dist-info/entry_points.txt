@@ -1,0 +1,3 @@
+[console_scripts]
+mcstatus=mcstatus.__main__:main
+
