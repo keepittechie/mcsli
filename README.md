@@ -49,6 +49,16 @@ Execute the install.sh script. The script must be run with root privileges.
 ```bash
 sudo bash ./install.sh
 ```
+
+*Note: If the script doesn't run, this could be that the script is executable.*
+```bash
+chmod +x install_full.sh
+```
+*Run again:*
+```bash
+sudo bash ./install_full.sh
+```  
+
 4. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
@@ -88,6 +98,18 @@ Execute the install_full.sh script. The script must be run with root privileges.
 ```bash
 sudo bash ./install_full.sh
 ```
+
+*Note: If the script doesn't run, this could be that the script is executable.*
+
+```bash
+chmod +x install_full.sh
+```
+*The run again:*
+
+```bash
+sudo bash ./install_full.sh
+```  
+
 4. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
