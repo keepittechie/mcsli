@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+    mscli-docker:
+      image: mscli-docker
+      volumes:
+        - ./config:/opt/minecraft
+      environment:
+        - SERVER_SOFTWARE=purpur # IF YOU CHANGE THIS AFTER YOU SET IT UP, YOU HAVE TO DELETE THE ORIGINAL .jar FILE IN ./config
+        - SERVER_VERSION=1.20.4
+        - MAX_RAM=1G
+        - MIN_RAM=1G
+      ports:
+        - 25565:25565
+        # - 19132:19132 # Optional, uncomment if you want to run geyser
