@@ -111,7 +111,7 @@ http://ip-address/5000
 ```
 
 ![mcsli_webui](mcsli_webui.png)
-<img src="mcsli_webui.png" width="300" height="600">
+<img src="mcsli_webui.png" width="300">
 
 ## Important Notes
 
