@@ -39,7 +39,6 @@ MINECRAFT_USER="minecraft"
 sudo adduser --system --no-create-home --group "$MINECRAFT_USER"
 
 # Update and Install Necessary Packages
-sudo add-apt-repository ppa:openjdk-r/ppa -y # Add Java PPA
 sudo apt update # Refresh package lists
 sudo apt install openjdk-17-jre-headless wget -y # Install Java and wget
 
