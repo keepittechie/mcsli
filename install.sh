@@ -54,23 +54,59 @@ OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2)
 
 # Install and configure firewall based on the operating system
 if [ "$OS_ID" = "debian" ]; then
-    echo "Debian system detected. Installing and configuring firewalld..."
-    sudo apt install firewalld -y
-    sudo systemctl start firewalld
-    sudo systemctl enable firewalld
-
-    sudo firewall-cmd --permanent --add-port=25565/tcp # Open port for Minecraft
-    sudo firewall-cmd --permanent --add-service=ssh # Open port for SSH
-
-    sudo firewall-cmd --reload
-else
-    echo "Ubuntu system detected. Configuring UFW..."
+    # ... [Debian-specific firewall configuration logic] ...
+    # Check if UFW is installed
+    if command -v ufw &>/dev/null; then
+        echo "Configuring UFW..."
+        sudo ufw allow 25565 # Open port for Minecraft
+        sudo ufw allow OpenSSH # Open port for SSH
+        sudo ufw --force enable
+    # Check if firewalld is installed
+    elif command -v firewall-cmd &>/dev/null; then
+        echo "Configuring firewalld..."
+        sudo systemctl start firewalld
+        sudo systemctl enable firewalld
+        sudo firewall-cmd --permanent --add-port=25565/tcp # Open port for Minecraft
+        sudo firewall-cmd --permanent --add-service=ssh # Open port for SSH
+        sudo firewall-cmd --reload
+    else
+        # Prompt the user for their preferred firewall implementation
+        echo "No firewall implementation detected. Choose a firewall to install:"
+        echo "1) UFW"
+        echo "2) firewalld"
+        read -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+        case $FIREWALL_CHOICE in
+            1)
+                echo "Installing and configuring UFW..."
+                sudo apt install ufw -y
+                sudo ufw allow 25565 # Open port for Minecraft
+                sudo ufw allow OpenSSH # Open port for SSH
+                sudo ufw --force enable
+                ;;
+            2)
+                echo "Installing and configuring firewalld..."
+                sudo apt install firewalld -y
+                sudo systemctl start firewalld
+                sudo systemctl enable firewalld
+                sudo firewall-cmd --permanent --add-port=25565/tcp # Open port for Minecraft
+                sudo firewall-cmd --permanent --add-service=ssh # Open port for SSH
+                sudo firewall-cmd --reload
+                ;;
+            *)
+                echo "Invalid choice. Exiting."
+                exit 1
+                ;;
+        esac
+    fi
+elif [ "$OS_ID" = "ubuntu" ]; then
+    # ... [Ubuntu-specific firewall configuration logic] ...
+    echo "Configuring UFW..."
     sudo ufw allow 25565 # Open port for Minecraft
     sudo ufw allow OpenSSH # Open port for SSH
-
-    # Enable UFW (Uncomplicated Firewall) with --force to automatically answer yes
-    echo "Enabling firewall..."
     sudo ufw --force enable
+else
+    echo "This script only works on Debian and Ubuntu distributions. Exiting."
+    exit 1
 fi
 
 # Define Minecraft server directory
