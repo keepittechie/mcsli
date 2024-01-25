@@ -1,2 +1,0 @@
-Minecraft Server Type: purpur
-Minecraft Server Version: 1.20.4
