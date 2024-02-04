@@ -2,7 +2,7 @@
 # This is my first time making a docker image, so feel free to make make changes
 
 # Stage 1: Build stage
-FROM buildpack-deps:stretch-curl AS builder
+FROM buildpack-deps:stable-curl AS builder
 
 WORKDIR /app
 
