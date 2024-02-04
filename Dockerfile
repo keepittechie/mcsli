@@ -1,11 +1,20 @@
 # Created by SZ27 https://github.com/realSZ27
 # This is my first time making a docker image, so feel free to make make changes
 
-# Stage 1, build rcon client for all archs
-FROM alpine:3 AS builder
+# Stage 1: Build stage
+FROM buildpack-deps:stretch-curl AS builder
 
-RUN apk --no-cache add git cmake gcc ninja
+WORKDIR /app
 
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    cmake \
+    ninja-build \
+    git \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone the repository and build the program
 RUN git clone https://github.com/radj307/ARRCON \
     && cd ARRCON \
     && git submodule update --init --recursive \
