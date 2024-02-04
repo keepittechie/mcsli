@@ -4,7 +4,7 @@
 # Stage 1, build rcon client for all archs
 FROM alpine:3 AS builder
 
-RUN apk add --no-cache git cmake gcc ninja bash
+RUN apk add --no-cache git cmake g++ ninja bash
 
 RUN git clone https://github.com/radj307/ARRCON \
     && cd ARRCON \
