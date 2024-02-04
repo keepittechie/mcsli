@@ -4,7 +4,7 @@
 # Stage 1, build rcon client for all archs
 FROM ubuntu:22.04 AS builder
 
-RUN apt update && apt install git cmake g++ ninja -y
+RUN apt-get update && apt-get install git cmake g++ ninja -y
 
 RUN git clone https://github.com/radj307/ARRCON \
     && cd ARRCON \
