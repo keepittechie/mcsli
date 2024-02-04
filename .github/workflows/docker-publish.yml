@@ -1,7 +1,7 @@
 # To make this work with your repo, you have to change realsz27 to whatever your name is (make sure it's lowercase)
 # and create a personal access token in your GitHub account with the write:packages scope. Add this token as a secret
 # named GHCR_TOKEN in your repository. (GHCR is only avalible for paid accounts or private repos)
-# Docker hub also works the same way
+# Docker hub also works the same way, make secrets, one for your username, and the other an access token from dockerhub.
 name: Docker Image CI/CD
 
 on:
@@ -20,16 +20,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker Image
-        env:
-          IMAGE_NAME: mcsli-docker
-          GHCR_REPO: ghcr.io/realsz27
-          DOCKERHUB_REPO: mcsli
-        run: |
-          docker buildx create --use
-          docker buildx inspect --bootstrap
-          docker buildx build --platform linux/amd64,linux/arm64 -t $GHCR_REPO/$IMAGE_NAME:latest -t $DOCKERHUB_REPO/$IMAGE_NAME:latest --push .
-
       - name: Login to GitHub Container Registry
         env:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
@@ -42,3 +32,14 @@ jobs:
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         run: |
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+
+
+      - name: Build Docker Image
+        env:
+          IMAGE_NAME: mcsli-docker
+          GHCR_REPO: ghcr.io/realsz27
+          DOCKERHUB_REPO: mcsli
+        run: |
+          docker buildx create --use
+          docker buildx inspect --bootstrap
+          docker buildx build --platform linux/amd64,linux/arm64 -t $GHCR_REPO/$IMAGE_NAME:latest -t $DOCKERHUB_REPO/$IMAGE_NAME:latest --push .
