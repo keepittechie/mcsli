@@ -6,13 +6,13 @@ FROM alpine:3 AS builder
 
 WORKDIR /rcon
 
-RUN apk add --no-cache git cmake gcc ninja
+RUN apk add --no-cache git cmake gcc ninja bash
 
 RUN git clone https://github.com/radj307/ARRCON \
-    && cd ARRCON \
-    && git submodule update --init --recursive \
-    && cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja \
-    && cmake --build build --config Release
+    cd ARRCON \
+    git submodule update --init --recursive \
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja \
+    cmake --build build --config Release
 
 # Stage 2, run the server
 FROM alpine:3
