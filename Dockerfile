@@ -2,9 +2,9 @@
 # This is my first time making a docker image, so feel free to make make changes
 
 # Stage 1, build rcon client for all archs
-FROM ubuntu:22.04 AS builder
+FROM alpine:3 AS builder
 
-RUN apt-get update && apt-get install git cmake g++ ninja-build -y
+RUN apk --no-cache add git cmake gcc ninja-build
 
 RUN git clone https://github.com/radj307/ARRCON \
     && cd ARRCON \
