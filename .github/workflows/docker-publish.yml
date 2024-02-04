@@ -39,4 +39,4 @@ jobs:
           IMAGE_NAME: mcsli-docker
           GHCR_REPO: ghcr.io/realsz27
         run: |
-          docker push mcsli/mcsli-docker:latest
+          docker push $GHCR_REPO/$IMAGE_NAME:latest
