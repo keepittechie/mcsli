@@ -34,6 +34,10 @@ jobs:
         run: |
           echo $GHCR_TOKEN | docker login ghcr.io -u realsz27 --password-stdin
 
+      - name: List Local Docker Images
+        run: |
+          docker images
+
       - name: Push Docker Image to GitHub Container Registry
         env:
           IMAGE_NAME: mcsli-docker
