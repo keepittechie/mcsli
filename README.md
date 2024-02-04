@@ -8,6 +8,11 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/keepittechie/mcsli)
 ![GitHub last commit](https://img.shields.io/github/last-commit/keepittechie/mcsli?color=red)
 
+## Table of Contents
+1. [Using install.sh](#instructions-on-using-the-installsh-script)
+2. [Using install-full.sh](#instructions-on-using-the-install_fullsh-script)
+3. [Docker Container](#using-the-docker-container)
+
 ## Introduction/Overview
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
 
@@ -27,13 +32,15 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 - **Ubuntu Server 18.04**
 - **Debian 11**
 
+Docker image will work with any distro and windows
+
 # Instructions on Using the 'install.sh' Script
 1. **Clone the Repository:**  
 
-Clone the repository containing the script to your server.
+Download the script to your server.
    
 ```bash
-   git clone https://github.com/keepittechie/mcsli.git
+wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh
 ```
 2. **Navigate to the Script Directory:**
 
@@ -79,10 +86,10 @@ This script will install both mcsli & mcsli_webui.
 
 1. **Clone the Repository:**  
 
-Clone the repository containing the script to your server.
+Download the script to your server.
    
 ```bash
-   git clone https://github.com/keepittechie/mcsli.git
+wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install_full.sh
 ```
 2. **Navigate to the Script Directory:**
 
@@ -133,6 +140,49 @@ or
 ```bash
 http://ip-address/5000
 ```
+
+## Using the docker container
+
+**Note: the docker container does not include the web ui. If you know a solution to this, please feel free to contribute**
+1. Make sure you have [docker](https://docs.docker.com/engine/install) and [docker compose](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) installed
+2. Make a ``docker-compose.yml`` file with these contents:
+```yaml
+version: '3.9'
+services:
+    mscli-docker:
+      conatainer_name: mcsli
+      image: mscli-docker
+      volumes:
+        - ./config:/opt/minecraft
+      environment:
+        - SERVER_SOFTWARE=purpur
+        - SERVER_VERSION=1.20.4
+        - MAX_RAM=1G
+        - MIN_RAM=1G
+      ports:
+        - 25565:25565
+        # - 19132:19132 # Optional, uncomment if you want to run geyser
+```
+3. Run ``docker compose up -d``
+
+4. If and when you need to run a command on the server, you can run:
+```bash
+docker exec -i mcsli-docker /rcon -a 127.0.0.1:25575 -p mcsli-docker
+```
+
+### Available config options:
+
+variabe|options
+---|---
+SERVER_SOFTWARE|purpur (default), paper, vanilla
+SERVER_VERSION|Any valid minecraft version (default, 1.20.4); **must be the full version, like *1.20.4***
+MIN/MAX_RAM|Any valid java ram amount like **5G** (5 gigabytes) or **1024M** (1024 megabytes); (default 1G on both)
+
+- Ports in docker are arranged ```host:container```, meaning that **you can only change the host port**.
+- Same goes for volumes, you can change the *host* volume but not the *container* volume.
+
+### Building
+As long as you have ``Dockerfile`` and ``install-docker.sh`` in the same directory you are running the build on, it should work like any other docker image.
 
 ## Important Notes
 

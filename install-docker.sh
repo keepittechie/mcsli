@@ -69,6 +69,8 @@ if [ ! -e $MINECRAFT_DIR"/eula.txt" ]; then
     # Accept EULA by modifying eula.txt
     echo -e "${GREEN}Accepting EULA...${NC}"
     sed -i 's/eula=false/eula=true/g' eula.txt
+    sed -i 's/enable-rcon=false/enable-rcon=true/g' server.properties
+    sed -i 's/rcon.password=/rcon.password=mcsli-docker/g' server.properties
 fi
 echo -e "${GREEN}Minecraft server installation and setup complete! Starting...${NC}"
 

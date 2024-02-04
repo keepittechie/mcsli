@@ -1,8 +1,8 @@
 version: '3.9'
 services:
-    mscli-docker:
-      # conatainer-name: mcsli
-      image: mscli-docker
+    mcsli-docker:
+      container_name: mcsli-docker
+      image: sz27/mcsli:latest
       volumes:
         - ./config:/opt/minecraft
       environment:
