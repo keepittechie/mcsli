@@ -36,7 +36,7 @@ jobs:
 
       - name: Push Docker Image to GitHub Container Registry
         env:
-          IMAGE_NAME: mcsli-docker
+          IMAGE_NAME: mcsli
           GHCR_REPO: ghcr.io/realsz27
         run: |
           docker push $GHCR_REPO/$IMAGE_NAME:latest
