@@ -20,7 +20,7 @@ jobs:
       - name: Build and Push Docker Image
         env:
           IMAGE_NAME: mcsli-docker
-          GHCR_REPO: ghcr.io/realSZ27
+          GHCR_REPO: ghcr.io/realsz27 # Make sure this is lowercase
         run: |
           docker buildx create --use
           docker buildx inspect --bootstrap
