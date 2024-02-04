@@ -2,7 +2,6 @@
 # This is my first time making a docker image, so feel free to make make changes
 
 FROM alpine:3
-LABEL org.opencontainers.image.source="https://github.com/realSZ27/mcsli"
 
 # Install required packages
 RUN apk add --no-cache bash jq curl wget openjdk17 openjdk8
