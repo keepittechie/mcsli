@@ -24,7 +24,7 @@ RUN git clone https://github.com/radj307/ARRCON \
 # Stage 2, run the server
 FROM alpine:3
 
-COPY --from=builder /ARRCON/build/ARRCON/ARRCON /rcon
+COPY --from=builder /app/ARRCON/build/ARRCON /app/ARRCON
 
 # Install required packages
 RUN apk add --no-cache bash jq curl wget openjdk17 openjdk8
