@@ -1,4 +1,4 @@
-# To make this work with your repo, you have to change realsz27 to whatever your name is (make sure its lowercase)
+# To make this work with your repo, you have to change realsz27 to whatever your name is (make sure it's lowercase)
 # and create a personal access token in your GitHub account with the write:packages scope. Add this token as a secret
 # named GHCR_TOKEN in your repository.
 name: Docker Image CI/CD
@@ -36,7 +36,7 @@ jobs:
 
       - name: Push Docker Image to GitHub Container Registry
         env:
-          IMAGE_NAME: mcsli
+          IMAGE_NAME: mcsli-docker
           GHCR_REPO: ghcr.io/realsz27
         run: |
           docker push $GHCR_REPO/$IMAGE_NAME:latest
