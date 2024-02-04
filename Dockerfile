@@ -4,6 +4,8 @@
 # Stage 1, build rcon client for all archs
 FROM alpine:3 AS builder
 
+WORKDIR /rcon
+
 RUN apk add --no-cache git cmake gcc ninja
 
 RUN git clone https://github.com/radj307/ARRCON \
@@ -15,11 +17,10 @@ RUN git clone https://github.com/radj307/ARRCON \
 # Stage 2, run the server
 FROM alpine:3
 
+COPY --from=builder /ARRCON/build/ARRCON/ARRCON /rcon
+
 # Install required packages
 RUN apk add --no-cache bash jq curl wget openjdk17 openjdk8
-
-# Copy rcon client
-COPY --from=outdead/rcon /rcon /rcon
 
 # Copies script
 COPY ./install-docker.sh /
