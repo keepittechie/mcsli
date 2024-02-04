@@ -38,8 +38,8 @@ jobs:
         env:
           IMAGE_NAME: mcsli-docker
           GHCR_REPO: ghcr.io/realsz27
-          DOCKERHUB_REPO: mcsli
+          DOCKERHUB_REPO: sz27/mcsli
         run: |
           docker buildx create --use
           docker buildx inspect --bootstrap
-          docker buildx build --platform linux/amd64,linux/arm64 -t $GHCR_REPO/$IMAGE_NAME:latest -t $DOCKERHUB_REPO/$IMAGE_NAME:latest --push .
+          docker buildx build --platform linux/amd64,linux/arm64 -t $GHCR_REPO/$IMAGE_NAME:latest -t $DOCKERHUB_REPO:latest --push .
