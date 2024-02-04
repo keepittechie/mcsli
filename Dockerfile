@@ -3,11 +3,8 @@
 
 FROM alpine:3
 
-# Copy the first Java installation (e.g., Eclipse Temurin)
-COPY --from=eclipse-temurin:17 /opt/java/openjdk /opt/java/openjdk/17
-
-# Copy the second Java installation (replace 'path/to/your/java' with the actual path)
-COPY --from=eclipse-temurin:8 /opt/java/openjdk /opt/java/openjdk/8
+# Install required packages
+RUN apk add --no-cache bash jq curl wget openjdk17 openjdk8
 
 # Copies script
 COPY ./install-docker.sh /
