@@ -11,8 +11,7 @@ RUN apt-get update && apt-get install -y \
     cmake \
     ninja-build \
     git \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+    g++ 
 
 # Clone the repository and build the program
 RUN git clone https://github.com/radj307/ARRCON \
