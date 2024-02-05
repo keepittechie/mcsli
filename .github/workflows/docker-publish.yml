@@ -6,7 +6,6 @@ name: Docker Image CI/CD
 
 on:
   push:
-    branches:
       paths:
         - '/docker_build/**'
 jobs:
@@ -23,8 +22,9 @@ jobs:
       - name: Login to GitHub Container Registry
         env:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GITHUB_USER: realsz27
         run: |
-          echo $GHCR_TOKEN | docker login ghcr.io -u realsz27 --password-stdin
+          echo $GHCR_TOKEN | docker login ghcr.io -u $GITHUB_USER --password-stdin
 
       - name: Login to Docker Hub
         env:
