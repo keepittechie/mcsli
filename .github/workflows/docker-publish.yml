@@ -7,8 +7,8 @@ name: Docker Image CI/CD
 on:
   push:
     branches:
-      - main
-
+      paths:
+        - '/docker_build/**'
 jobs:
   build:
     runs-on: ubuntu-latest

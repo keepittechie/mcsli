@@ -150,9 +150,9 @@ http://ip-address/5000
 ```yaml
 version: '3.9'
 services:
-    mscli-docker:
-      conatainer_name: mcsli
-      image: mscli-docker
+    mcsli-docker:
+      container_name: mcsli-docker
+      image: sz27/mcsli:latest
       volumes:
         - ./config:/opt/minecraft
       environment:
