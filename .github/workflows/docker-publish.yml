@@ -6,8 +6,10 @@ name: Docker Image CI/CD
 
 on:
   push:
-      paths:
-        - '/docker_build/**'
+    paths:
+      - '/docker_build/**'
+  workflow_dispatch:
+  
 jobs:
   build:
     runs-on: ubuntu-latest
