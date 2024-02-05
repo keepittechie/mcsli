@@ -36,21 +36,14 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 Docker image will work with any distro and windows
 
 # Instructions on Using the 'install.sh' Script
-1. **Clone the Repository:**  
+1. **Download the script:**  
 
 Download the script to your server.
    
 ```bash
 wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh
 ```
-2. **Navigate to the Script Directory:**
-
-Change to the directory containing the script.
-
-```bash
-cd ./mcsli
-```
-3. **Run the Installation Script:**
+2. **Run the Installation Script:**
 
 Execute the install.sh script. The script must be run with root privileges.
 
@@ -67,11 +60,11 @@ chmod +x install.sh
 sudo bash ./install.sh
 ```  
 
-4. **Review and Customize server.properties:**
+3. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-5. **Start the Minecraft Server:**
+4. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
@@ -92,14 +85,7 @@ Download the script to your server.
 ```bash
 wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install_full.sh
 ```
-2. **Navigate to the Script Directory:**
-
-Change to the directory containing the script.
-
-```bash
-cd ./mcsli
-```
-3. **Run the Installation Script:**
+2. **Run the Installation Script:**
 
 Execute the install_full.sh script. The script must be run with root privileges.
 
@@ -118,11 +104,11 @@ chmod +x install_full.sh
 sudo bash ./install_full.sh
 ```  
 
-4. **Review and Customize server.properties:**
+3. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-5. **Start the Minecraft Server:**
+4. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
