@@ -12,6 +12,7 @@
 1. [Using install.sh](#instructions-on-using-the-installsh-script)
 2. [Using install-full.sh](#instructions-on-using-the-install_fullsh-script)
 3. [Docker Container](#using-the-docker-container)
+4. [Connecting](#connecting)
 
 ## Introduction/Overview
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
@@ -145,7 +146,7 @@ http://ip-address/5000
 
 **Note: the docker container does not include the web ui. If you know a solution to this, please feel free to contribute**
 1. Make sure you have [docker](https://docs.docker.com/engine/install) and [docker compose](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) installed
-2. Make a ``docker-compose.yml`` file with these contents:
+2. Make a ``docker-compose.yml`` file with these contents. Change the values as desired:
 ```yaml
 version: '3.9'
 services:
@@ -167,8 +168,9 @@ services:
 
 4. If and when you need to run a command on the server, you can run:
 ```bash
-docker exec -i mcsli-docker /rcon -a 127.0.0.1:25575 -p mcsli-docker
+docker exec -it mcsli-docker /rcon-cli --port 25575 --password mcsli-docker
 ```
+If you changed the rcon password (recommended) or container name, you will have to subsitute either (or both) of the ``mscli-docker``'s for those values
 
 ### Available config options:
 
@@ -183,6 +185,12 @@ MIN/MAX_RAM|Any valid java ram amount like **5G** (5 gigabytes) or **1024M** (10
 
 ### Building
 As long as you have ``Dockerfile`` and ``install-docker.sh`` in the same directory you are running the build on, it should work like any other docker image.
+
+## Connecting
+You can connect to the minecraft server by putting the server's ip address into the game. But without port forwarding, a proxy, or a vpn, this will not work outside your own network. To fix this you could:
+1. **Use a VPN:** There are many selfhosted options to go with, [WireGaurd](https://www.wireguard.com/), [OpenVPN](https://openvpn.net/), [netbird](https://netbird.io/). But the one that is the easiest, in my opinion, is [**tailscale**](https://tailscale.com/). Specifically, the [Github community plan](https://tailscale.dev/blog/multi-user-tailnet-github-orgs). This allows you to invite your friends to your "tailnet" and play on your server with your *tailscale* ip.
+2. **Use a Proxy:** This is by far the easiest way to do it, and the easiest proxy service to use is probably [playit.gg](https://playit.gg/). Simply download the client on your server, create a tunnel for java minecraft, and it will provide you with a domain you can connect to.
+3. **Port forward:** this can vary from router to router, look up online how to do it on yours. The only port you need to forward is 25565 unless you have your own config (ie. If you're using geyser). **This is the most insecure option, as anyone on the internet can see the open port, and potentially expliot it.** The chances of this are very low, but when there are better options out there, I would stay away from this one.
 
 ## Important Notes
 

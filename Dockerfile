@@ -1,29 +1,15 @@
 # Created by SZ27 https://github.com/realSZ27
 # This is my first time making a docker image, so feel free to make make changes
 
-# Stage 1: Build stage
-FROM buildpack-deps:stable-curl AS builder
+# Stage 1, get rcon-cli
+FROM alpine:3 AS grabber
 
-WORKDIR /app
+RUN apk add --no-cache go && go install github.com/itzg/rcon-cli@latest
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
-    cmake \
-    ninja-build \
-    git \
-    g++ 
-
-# Clone the repository and build the program
-RUN git clone https://github.com/radj307/ARRCON \
-    && cd ARRCON \
-    && git submodule update --init --recursive \
-    && cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja \
-    && cmake --build build --config Release
-
-# Stage 2, run the server
+# Stage 2, make image for server
 FROM alpine:3
 
-COPY --from=builder /app/ARRCON/build/ARRCON /app/ARRCON
+COPY --from=grabber $GOPATH/root/go/bin/rcon-cli /rcon-cli
 
 # Install required packages
 RUN apk add --no-cache bash jq curl wget openjdk17 openjdk8
