@@ -42,4 +42,4 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx inspect --bootstrap
-          docker buildx build --platform linux/amd64,linux/arm64 -t $GHCR_REPO/$IMAGE_NAME:latest -t $DOCKERHUB_REPO:latest --push .
+          docker buildx build --platform linux/amd64,linux/arm64 -t $GHCR_REPO/$IMAGE_NAME:latest -t $DOCKERHUB_REPO:latest --push /docker_build
