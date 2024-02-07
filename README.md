@@ -78,7 +78,7 @@ sudo systemctl start minecraft.service
 
 This script will install both mcsli & mcsli_webui.
 
-1. **Clone the Repository:**  
+1. **Download the Script:**  
 
 Download the script to your server.
    
@@ -150,6 +150,8 @@ services:
         - 25565:25565
         # - 19132:19132 # Optional, uncomment if you want to run geyser
 ```
+*Note: there is also a ``bleeding`` tag that matches the ``test`` branch. It cant be guaranteed that this will always function properly.*
+
 3. Run ``docker compose up -d``
 
 4. If and when you need to run a command on the server, you can run:
