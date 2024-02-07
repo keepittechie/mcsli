@@ -8,10 +8,6 @@ on:
     paths:
       - '/docker_build/**'
   workflow_dispatch:
-
-permissions:
-  packages:
-    write
   
 jobs:
   build:
