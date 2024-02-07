@@ -138,7 +138,7 @@ version: '3.9'
 services:
     mcsli-docker:
       container_name: mcsli-docker
-      image: sz27/mcsli:latest
+      image: ghcr.io/realsz27/mcsli:latest
       volumes:
         - ./config:/opt/minecraft
       environment:
@@ -150,7 +150,6 @@ services:
         - 25565:25565
         # - 19132:19132 # Optional, uncomment if you want to run geyser
 ```
-*Note: there is also a ``bleeding`` tag that matches the ``test`` branch. It cant be guaranteed that this will always function properly.*
 
 3. Run ``docker compose up -d``
 
