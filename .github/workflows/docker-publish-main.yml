@@ -51,6 +51,6 @@ jobs:
           context: ./docker_build
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.GHCR_REPO }}/${{ vars.IMAGE_NAME }}:bleeding,${{ env.DOCKERHUB_REPO }}:bleeding
+          tags: ${{ env.GHCR_REPO }}/${{ vars.IMAGE_NAME }}:latest,${{ env.DOCKERHUB_REPO }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
