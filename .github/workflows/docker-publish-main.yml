@@ -1,5 +1,5 @@
 # To make this work on your own repo, see PR #2
-name: Docker Image CI
+name: Docker Image CI - Main
 
 on:
   push:
