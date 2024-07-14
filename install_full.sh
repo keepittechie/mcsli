@@ -59,7 +59,7 @@ else
     sudo apt install openjdk-8-jre-headless -y
     echo "Using java version 8..."
 fi
-sudo apt install wget -y # Install Java and wget
+sudo apt install wget -y # Install wget
 
 # Detect Operating System
 OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2)
@@ -203,9 +203,13 @@ while true; do
         echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"$MINECRAFT_DIR\" (Full path \"$MINECRAFT_DIR/manual-$SERVER_VERSION.jar\"). Make sure the mcsli user can access this file."
         while true; do
             read -s -n 1 -p "Press any key once complete..."
-            if [ ! -f "$SERVER_JAR" ]; then
+            if [ -f "$SERVER_JAR" ]; then
+                echo -e "${GREEN}Minecraft server JAR file found.${NC}"
+                break
+            else
                 echo -e "${RED}Failed to find the Minecraft server JAR file. Try again.${NC}"
             fi
+        done
         *)
             echo "Not a valid response, try again."
             ;;

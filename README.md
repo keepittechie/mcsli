@@ -36,35 +36,18 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 Docker image will work with any distro and windows
 
 # Instructions on Using the 'install.sh' Script
-1. **Download the script:**  
+1. **Download and run the script:**  
 
-Download the script to your server.
-   
 ```bash
-wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh
+curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | sh
 ```
-2. **Run the Installation Script:**
+(Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
-Execute the install.sh script. The script must be run with root privileges.
-
-```bash
-sudo bash ./install.sh
-```
-
-*Note: If the script doesn't run, this could be that the script is not executable.*
-```bash
-chmod +x install.sh
-```
-*Run again:*
-```bash
-sudo bash ./install.sh
-```  
-
-3. **Review and Customize server.properties:**
+2. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-4. **Start the Minecraft Server:**
+3. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
@@ -78,37 +61,18 @@ sudo systemctl start minecraft.service
 
 This script will install both mcsli & mcsli_webui.
 
-1. **Download the Script:**  
+1. **Download and run the script:**  
 
-Download the script to your server.
-   
 ```bash
-wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install_full.sh
+curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | sh
 ```
-2. **Run the Installation Script:**
+(Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
-Execute the install_full.sh script. The script must be run with root privileges.
-
-```bash
-sudo bash ./install_full.sh
-```
-
-*Note: If the script doesn't run, this could be that the script is not executable.*
-
-```bash
-chmod +x install_full.sh
-```
-*The run again:*
-
-```bash
-sudo bash ./install_full.sh
-```  
-
-3. **Review and Customize server.properties:**
+2. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-4. **Start the Minecraft Server:**
+3. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
@@ -116,7 +80,7 @@ Manually start the Minecraft server using the following command:
 sudo systemctl start minecraft.service
 ```
 
-5. **Access the mcsli_webui:**
+4. **Access the mcsli_webui:**
 
 To access the webui goto link:
 
