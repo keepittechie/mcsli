@@ -15,6 +15,28 @@ MINECRAFT_DIR="/opt/minecraft"
 # Create Minecraft directory
 mkdir -p "$MINECRAFT_DIR" # Create the directory
 
+function version {
+    echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
+}
+
+# Select which java version to use
+if [ $(version $SERVER_VERSION) -ge $(version "1.20.5") ]; then
+    export JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
+    export PATH=$JAVA_HOME/bin:$PATH
+    JAVA_BINARY=$JAVA_HOME/bin/java
+    echo "Using java version 21..."
+elif [ $(version $SERVER_VERSION) -ge $(version "1.17") ]; then
+    export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
+    export PATH=$JAVA_HOME/bin:$PATH
+    JAVA_BINARY=$JAVA_HOME/bin/java
+    echo "Using java version 17..."
+else
+    export JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
+    export PATH=$JAVA_HOME/bin:$PATH
+    JAVA_BINARY=$JAVA_HOME/bin/java
+    echo "Using java version 8..."
+fi
+
 # Download the specific Minecraft server version
 # Originally I had it check if either the server jar either exists, or if the SERVER_VERSION or SERVER_SOFTWARE had changed, before downloading.
 # I decided against this so you get the newest build every time you restart the container.

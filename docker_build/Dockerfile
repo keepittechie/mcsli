@@ -12,7 +12,7 @@ FROM alpine:3
 COPY --from=grabber $GOPATH/root/go/bin/rcon-cli /rcon-cli
 
 # Install required packages
-RUN apk add --no-cache bash jq curl wget openjdk21-jre
+RUN apk add --no-cache bash jq curl wget openjdk21-jre-headless openjdk17-jre-headless openjdk8-jre-headless
 
 # Copies script
 COPY ./install-docker.sh /

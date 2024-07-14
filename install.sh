@@ -48,7 +48,26 @@ sudo adduser --system --no-create-home --group "$MINECRAFT_USER"
 
 # Update and Install Necessary Packages
 sudo apt update # Refresh package lists
-sudo apt install openjdk-17-jre-headless wget -y # Install Java and wget
+
+function version {
+    echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
+}
+
+# Asks the user for their preferred version
+read -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+
+# Select which java version to use
+if [ $(version $SERVER_VERSION) -ge $(version "1.20.5") ]; then
+    sudo apt install openjdk-21-jre-headless -y
+    echo "Using java version 21..."
+elif [ $(version $SERVER_VERSION) -ge $(version "1.17") ]; then
+    sudo apt install openjdk-17-jre-headless -y
+    echo "Using java version 17..."
+else
+    sudo apt install openjdk-8-jre-headless -y
+    echo "Using java version 8..."
+fi
+sudo apt install wget -y # Install Java and wget
 
 # Detect Operating System
 OS_ID=$(grep '^ID=' /etc/os-release | cut -d= -f2)
@@ -126,8 +145,7 @@ while true; do
     echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
     # Ask the user for their choice of server software
-    read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla): " SERVER_SOFTWARE_CHOICE
-    read -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+    read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
 
     case $SERVER_SOFTWARE_CHOICE in
         1)
@@ -226,9 +244,12 @@ while true; do
             ;;
         5)
         SERVER_JAR="$MINECRAFT_DIR/manual-$SERVER_VERSION.jar"
-        echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"/opt/minecraft\" (Full path \"/opt/minecraft/manual-$SERVER_VERSION.jar\"). Make sure the mcsli user can access this file."
-        read -s -n 1 -p "Press any key to once complete..."
-        read -s -n 1 -p "${RED}Are you sure?${NC}"
+        echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"$MINECRAFT_DIR\" (Full path \"$MINECRAFT_DIR/manual-$SERVER_VERSION.jar\"). Make sure the mcsli user can access this file."
+        while true; do
+            read -s -n 1 -p "Press any key once complete..."
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to find the Minecraft server JAR file. Try again.${NC}"
+            fi
         *)
             echo "Not a valid response, try again."
             ;;
