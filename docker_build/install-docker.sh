@@ -70,8 +70,12 @@ elif [ "$SERVER_SOFTWARE" = "vanilla" ]; then
     wget -O "$SERVER_JAR" "$download_url"
 
 elif [ "$SERVER_SOFTWARE" = "manual" ]; then
-    SERVER_JAR="$MINECRAFT_DIR/$MANUAL_FILENAME"
-    echo -e "${GREEN}Currently in manual mode. Make sure you have set the MANUAL_FILENAME enviornment variable.${NC}"
+    if [ -f "$SERVER_JAR" ]; then
+        echo -e "${GREEN}Minecraft server JAR file found.${NC}"
+    else
+        echo -e "${RED}Failed to find the Minecraft server JAR file. Exiting...${NC}"
+        exit 1
+    fi
 elif [ "$SERVER_SOFTWARE" = "fabric" ]; then
     loader_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION" | jq -r '[.[] | select(.loader.stable == true)] | sort_by(.loader.build) | last | .loader.version')
     installer_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/installer" | jq -r '[.[] | select(.stable == true)] | sort_by(.version) | last | .version')

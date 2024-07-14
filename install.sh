@@ -254,6 +254,9 @@ while true; do
                 echo -e "${RED}Failed to find the Minecraft server JAR file. Try again.${NC}"
             fi
         done
+        
+        break
+        ;;
         *)
             echo "Not a valid response, try again."
             ;;

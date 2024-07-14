@@ -12,7 +12,8 @@
 1. [Using install.sh](#instructions-on-using-the-installsh-script)
 2. [Using install-full.sh](#instructions-on-using-the-install_fullsh-script)
 3. [Docker Container](#using-the-docker-container)
-4. [Connecting](#connecting)
+4. [Updating](#updating)
+5. [Connecting](#connecting)
 
 ## Introduction/Overview
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
@@ -137,6 +138,9 @@ MANUAL_FILENAME **Optional; only needed if you chose `manual` as your server sof
 
 ### Building
 As long as you have ``Dockerfile`` and ``install-docker.sh`` in the same directory you are running the build on, it should work like any other docker image.
+
+## Updating
+
 
 ## Connecting
 You can connect to the minecraft server by putting the server's ip address into the game. But without port forwarding, a proxy, or a vpn, this will not work outside your own network. To fix this you could:
