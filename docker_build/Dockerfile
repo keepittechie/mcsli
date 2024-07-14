@@ -12,7 +12,7 @@ FROM alpine:3
 COPY --from=grabber $GOPATH/root/go/bin/rcon-cli /rcon-cli
 
 # Install required packages
-RUN apk add --no-cache bash jq curl wget openjdk17 openjdk8
+RUN apk add --no-cache bash jq curl wget openjdk21-jre
 
 # Copies script
 COPY ./install-docker.sh /
@@ -22,6 +22,7 @@ ENV SERVER_VERSION "1.20.4"
 ENV SERVER_SOFTWARE "purpur"
 ENV MAX_RAM "1G"
 ENV MIN_RAM "1G"
+ENV MANUAL_FILENAME ""
 
 EXPOSE 25565
 EXPOSE 19132

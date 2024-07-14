@@ -134,7 +134,6 @@ http://ip-address/5000
 1. Make sure you have [docker](https://docs.docker.com/engine/install) and [docker compose](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) installed
 2. Make a ``docker-compose.yml`` file with these contents. Change the values as desired:
 ```yaml
-version: '3.9'
 services:
     mcsli-docker:
       container_name: mcsli-docker
@@ -163,9 +162,11 @@ If you changed the rcon password (recommended) or container name, you will have 
 
 variabe|options
 ---|---
-SERVER_SOFTWARE|purpur (default), paper, vanilla
+SERVER_SOFTWARE|**purpur** (default), **paper**, **vanilla**, **fabric** (automatically uses the latest fabric loader avalible for your version), **manual** (```MANUAL_FILENAME``` needed)
 SERVER_VERSION|Any valid minecraft version (default, 1.20.4); **must be the full version, like *1.20.4***
 MIN/MAX_RAM|Any valid java ram amount like **5G** (5 gigabytes) or **1024M** (1024 megabytes); (default 1G on both)
+MANUAL_FILENAME **Optional; only needed if you chose `manual` as your server software*|The filename of your supplied jar. This jar should be placed in the config directory it makes when you run it.
+
 
 - Ports in docker are arranged ```host:container```, meaning that **you can only change the host port**.
 - Same goes for volumes, you can change the *host* volume but not the *container* volume.

@@ -1,0 +1,14 @@
+services:
+    mcsli-docker:
+      container_name: mcsli-docker
+      build: ./
+      volumes:
+        - ./config:/opt/minecraft
+      environment:
+        - SERVER_SOFTWARE=manual
+        - SERVER_VERSION=1.8.9
+        - MAX_RAM=1G
+        - MIN_RAM=1G
+      ports:
+        - 25565:25565
+        # - 19132:19132 # Optional, uncomment if you want to run geyser

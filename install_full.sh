@@ -78,6 +78,8 @@ while true; do
     echo -e "${BLUE}1) paper:${NC} Very widely used (Will automatically install curl and jq if not installed already)"
     echo -e "${GREEN}2) purpur:${NC} Fork of paper; adds greater customization and some performance gains"
     echo -e "${RED}3) vanilla:${NC} Completely vanilla server from Mojang (Will automatically install curl and jq if not installed already)"
+    echo -e "${YELLOW}4) fabric:${NC} Adds support for fabric mods (Will automatically install curl and jq if not installed already)"
+    echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
     # Ask the user for their choice of server software
     read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla): " SERVER_SOFTWARE_CHOICE
@@ -150,6 +152,39 @@ while true; do
 
             break
             ;;
+        4)
+            SERVER_SOFTWARE="vanilla"
+            # Downloads curl and jq because of mojang api limitations
+            sudo apt install curl jq -y
+
+            # Get the latest fabric loader version
+            loader_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION" | jq -r '[.[] | select(.loader.stable == true)] | sort_by(.loader.build) | last | .loader.version')
+
+            # Get the latest server installer version
+            installer_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/installer" | jq -r '[.[] | select(.stable == true)] | sort_by(.version) | last | .version')
+
+            # Assemble download url
+            download_url="https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION/$loader_version/$installer_version/server/jar"
+
+            # Set SERVER_JAR after download
+            SERVER_JAR="$MINECRAFT_DIR/fabric-$SERVER_VERSION.jar"
+
+            # Download file
+            wget -O "$SERVER_JAR" "$download_url"
+
+            # Verify Download
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
+                exit 1
+            fi
+
+            break
+            ;;
+        5)
+        SERVER_JAR="$MINECRAFT_DIR/manual-$SERVER_VERSION.jar"
+        echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"/opt/minecraft\" (Full path \"/opt/minecraft/manual-$SERVER_VERSION.jar\"). Make sure the mcsli user can access this file."
+        read -s -n 1 -p "Press any key to once complete..."
+        read -s -n 1 -p "${RED}Are you sure?${NC}"
         *)
             echo "Not a valid response, try again."
             ;;
