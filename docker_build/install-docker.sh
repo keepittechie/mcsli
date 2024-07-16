@@ -7,10 +7,10 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0;0m' # No Color
 
 # Define Minecraft server directory
-MINECRAFT_DIR="/opt/minecraft"
+MINECRAFT_DIR="/data/minecraft"
 
 # Create Minecraft directory
 mkdir -p "$MINECRAFT_DIR" # Create the directory
@@ -37,6 +37,9 @@ else
     echo "Using java version 8..."
 fi
 
+ls -l /data
+# ls -l /
+
 # Download the specific Minecraft server version
 # Originally I had it check if either the server jar either exists, or if the SERVER_VERSION or SERVER_SOFTWARE had changed, before downloading.
 # I decided against this so you get the newest build every time you restart the container.
@@ -44,7 +47,7 @@ fi
 if [ "$SERVER_SOFTWARE" = "paper" ]; then
     
     # Get the build number of the most recent build
-    latest_build="$(curl -sX GET "https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds -H 'accept: application/json' | jq '.builds [-1].build')"
+    latest_build=$(curl -sX GET "https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds -H 'accept: application/json' | jq '.builds [-1].build')
     
     # Construct download URL
     download_url="https://papermc.io/api/v2"/projects/"paper"/versions/"$SERVER_VERSION"/builds/"$latest_build"/downloads/"paper"-"$SERVER_VERSION"-"$latest_build".jar
@@ -70,6 +73,7 @@ elif [ "$SERVER_SOFTWARE" = "vanilla" ]; then
     wget -O "$SERVER_JAR" "$download_url"
 
 elif [ "$SERVER_SOFTWARE" = "manual" ]; then
+    $SERVER_JAR = "$MINECRAFT_DIR/$SERVER_JAR"
     if [ -f "$SERVER_JAR" ]; then
         echo -e "${GREEN}Minecraft server JAR file found.${NC}"
     else

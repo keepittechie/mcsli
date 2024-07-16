@@ -1,10 +1,7 @@
-# Just a testing compose file
 services:
   mcsli-docker:
     container_name: mcsli-docker
-    # Only difference is that it builds the image rather than pulling it down
-    build:
-      dockerfile: ./Dockerfile
+    image: ghcr.io/realsz27/mcsli:latest
     volumes:
       - ./config:/data/minecraft
     environment:
