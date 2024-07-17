@@ -66,7 +66,7 @@ sudo bash ./install.sh
 (Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
 <details>
-<summary>3. Script Prompts and Answers:</summary>
+<summary><b>3. Script Prompts and Answers:</b></summary>
 
 
 Prompt 1: Web UI Installation
