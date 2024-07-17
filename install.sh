@@ -339,7 +339,7 @@ function installWebUI {
 
     # Update Server and Install Apache2
     sudo apt update
-    sudo apt install -y apache2 libapache2-mod-wsgi-py3
+    sudo apt install -y apache2 libapache2-mod-wsgi-py3 ufw
 
     # Define the path for the Apache virtual host configuration file
     VHOST_FILE="/etc/apache2/sites-available/mcsli-webui.conf"
@@ -406,7 +406,7 @@ EOF
 }
 
 # Determine whether to install webui
-echo -e "${GREEN}Would you like to install the webui? ${NC}"
+echo -e "${GREEN}Would you like to install the webui?${NC}"
 read -p "(y/N): " WEBUI_CHOICE
 case $WEBUI_CHOICE in
     y|Y|yes)
