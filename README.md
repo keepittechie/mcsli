@@ -75,11 +75,13 @@ Prompt 1: Web UI Installation
 **Options**:
 - `y` or `Y`: Yes, install the web UI
 - `N` or `n` (or just press Enter): No, do not install the web UI
+
 **Example Answer**: `y`
 
 Prompt 2: Minecraft Version
 
 **Prompt**: `What version of Minecraft would you like to use? (e.g., 1.20.4):`
+
 **Example Answer**: `1.20.4`
 
 Prompt 3: Server Software Type
@@ -91,6 +93,7 @@ Prompt 3: Server Software Type
 - `3`: Vanilla
 - `4`: Fabric
 - `5`: Manual (bring your own server .jar)
+
 **Example Answer**: `1`
 
 </details>
