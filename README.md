@@ -37,12 +37,32 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 
 Docker image will work with any distro and windows
 
-# Installing Without the WebUI
-1. **Download and run the script:**  
+# Installing Without the WebUI 
+
+1. **Download the script:**  
+
+Download the script to your server.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | bash
+git clone https://github.com/keepittechie/mcsli.git
 ```
+2. **Run the Installation Script:**
+
+Execute the install.sh script. The script must be run with root privileges.
+
+```bash
+cd mcsli
+sudo bash ./install.sh
+```
+
+*Note: If the script doesn't run, this could be that the script is not executable.*
+```bash
+chmod +x install.sh
+```
+*Run again:*
+```bash
+sudo bash ./install.sh
+``` 
 (Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
 2. **Review and Customize server.properties:**
