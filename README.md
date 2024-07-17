@@ -65,11 +65,44 @@ sudo bash ./install.sh
 ``` 
 (Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
-2. **Review and Customize server.properties:**
+<details>
+<summary>3. **Script Prompts and Answers:**</summary>
+
+ <details>
+    <summary>Prompt 1: Web UI Installation</summary>
+
+**Prompt**: `Would you like to install the webui? (y/N):`
+**Options**:
+- `y` or `Y`: Yes, install the web UI
+- `N` or `n` (or just press Enter): No, do not install the web UI
+**Example Answer**: `y`
+  </details>
+  <details>
+    <summary>Prompt 2: Minecraft Version</summary>
+
+**Prompt**: `What version of Minecraft would you like to use? (e.g., 1.20.4):`
+**Example Answer**: `1.20.4`
+  </details>
+  <details>
+    <summary>Prompt 3: Server Software Type</summary>
+
+**Prompt**: `Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.):`
+**Options**:
+- `1`: Paper
+- `2`: Purpur
+- `3`: Vanilla
+- `4`: Fabric
+- `5`: Manual (bring your own server .jar)
+**Example Answer**: `1`
+  </details>
+</details>
+
+
+4. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-3. **Start the Minecraft Server:**
+5. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
@@ -172,7 +205,7 @@ You can connect to the minecraft server by putting the server's ip address into 
 
 ## Important Notes
 
-- **Application Versions:** The script installs OpenJDK 17 and downloads the Minecraft server version specified in the script.
+- **Application Versions:** The script installs OpenJDK version based and the Minecraft server version specified in the script. Example (Minecraft 1.20.5 will install OpenJDK 21)
 - **Updating the Minecraft Server JAR:** Check for the latest server versions and update the script as needed.
 - **Review the Script:** Always review the script's code before running it on your server to ensure it meets your requirements and to understand the changes it will make.
 - **Static IP Address:** It is recommended to set a static IP address for your server to ensure that players can consistently connect to it.
