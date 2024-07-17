@@ -66,25 +66,23 @@ sudo bash ./install.sh
 (Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
 <details>
-<summary>3. **Script Prompts and Answers:**</summary>
+<summary>3. Script Prompts and Answers:</summary>
 
- <details>
-    <summary>Prompt 1: Web UI Installation</summary>
+
+Prompt 1: Web UI Installation
 
 **Prompt**: `Would you like to install the webui? (y/N):`
 **Options**:
 - `y` or `Y`: Yes, install the web UI
 - `N` or `n` (or just press Enter): No, do not install the web UI
 **Example Answer**: `y`
-  </details>
-  <details>
-    <summary>Prompt 2: Minecraft Version</summary>
+
+Prompt 2: Minecraft Version
 
 **Prompt**: `What version of Minecraft would you like to use? (e.g., 1.20.4):`
 **Example Answer**: `1.20.4`
-  </details>
-  <details>
-    <summary>Prompt 3: Server Software Type</summary>
+
+Prompt 3: Server Software Type
 
 **Prompt**: `Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.):`
 **Options**:
@@ -94,7 +92,7 @@ sudo bash ./install.sh
 - `4`: Fabric
 - `5`: Manual (bring your own server .jar)
 **Example Answer**: `1`
-  </details>
+
 </details>
 
 
