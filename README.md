@@ -9,10 +9,11 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/keepittechie/mcsli?color=red)
 
 ## Table of Contents
-1. [Using install.sh](#instructions-on-using-the-installsh-script)
-2. [Using install-full.sh](#instructions-on-using-the-install_fullsh-script)
+1. [Installing Without the WebUI](#Installing-Without-the-WebUI)
+2. [Installing With the WebUI](#Installing-With-the-webui)
 3. [Docker Container](#using-the-docker-container)
-4. [Connecting](#connecting)
+4. [Updating](#updating)
+5. [Connecting](#connecting)
 
 ## Introduction/Overview
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
@@ -35,36 +36,19 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 
 Docker image will work with any distro and windows
 
-# Instructions on Using the 'install.sh' Script
-1. **Download the script:**  
+# Installing Without the WebUI
+1. **Download and run the script:**  
 
-Download the script to your server.
-   
 ```bash
-wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh
+curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | sh
 ```
-2. **Run the Installation Script:**
+(Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
-Execute the install.sh script. The script must be run with root privileges.
-
-```bash
-sudo bash ./install.sh
-```
-
-*Note: If the script doesn't run, this could be that the script is not executable.*
-```bash
-chmod +x install.sh
-```
-*Run again:*
-```bash
-sudo bash ./install.sh
-```  
-
-3. **Review and Customize server.properties:**
+2. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-4. **Start the Minecraft Server:**
+3. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
@@ -72,43 +56,26 @@ Manually start the Minecraft server using the following command:
 sudo systemctl start minecraft.service
 ```
 
-# Instructions on Using the 'install_full.sh' Script
+# Installing With the WebUI
 
 <img src="mcsli_webui.png" width="600">
 
-This script will install both mcsli & mcsli_webui.
+This will install both mcsli & mcsli_webui.
 
-1. **Download the Script:**  
+1. **Download and run the script:**  
 
-Download the script to your server.
-   
 ```bash
-wget https://raw.githubusercontent.com/keepittechie/mcsli/main/install_full.sh
+curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | sh -s --webui
 ```
-2. **Run the Installation Script:**
+(Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
-Execute the install_full.sh script. The script must be run with root privileges.
+You can also run the script normally and select yes when it prompts you.
 
-```bash
-sudo bash ./install_full.sh
-```
-
-*Note: If the script doesn't run, this could be that the script is not executable.*
-
-```bash
-chmod +x install_full.sh
-```
-*The run again:*
-
-```bash
-sudo bash ./install_full.sh
-```  
-
-3. **Review and Customize server.properties:**
+2. **Review and Customize server.properties:**
 
 After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
 
-4. **Start the Minecraft Server:**
+3. **Start the Minecraft Server:**
 
 Manually start the Minecraft server using the following command:
 
@@ -116,16 +83,16 @@ Manually start the Minecraft server using the following command:
 sudo systemctl start minecraft.service
 ```
 
-5. **Access the mcsli_webui:**
+4. **Access the mcsli_webui:**
 
 To access the webui goto link:
 
 ```bash
-http://localhost/5000
+http://localhost:5000
 ```
 or
 ```bash
-http://ip-address/5000
+http://ip-address:5000
 ```
 
 ## Using the docker container
@@ -134,21 +101,19 @@ http://ip-address/5000
 1. Make sure you have [docker](https://docs.docker.com/engine/install) and [docker compose](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) installed
 2. Make a ``docker-compose.yml`` file with these contents. Change the values as desired:
 ```yaml
-version: '3.9'
 services:
-    mcsli-docker:
-      container_name: mcsli-docker
-      image: ghcr.io/realsz27/mcsli:latest
-      volumes:
-        - ./config:/opt/minecraft
-      environment:
-        - SERVER_SOFTWARE=purpur
-        - SERVER_VERSION=1.20.4
-        - MAX_RAM=1G
-        - MIN_RAM=1G
-      ports:
-        - 25565:25565
-        # - 19132:19132 # Optional, uncomment if you want to run geyser
+  mcsli-docker:
+    container_name: mcsli-docker
+    image: ghcr.io/realsz27/mcsli:latest
+    volumes:
+      - ./config:/data/minecraft
+    environment:
+      - SERVER_SOFTWARE=purpur
+      - SERVER_VERSION=1.21
+      - MAX_RAM=1G
+      - MIN_RAM=1G
+    ports:
+      - 25565:25565
 ```
 
 3. Run ``docker compose up -d``
@@ -163,15 +128,20 @@ If you changed the rcon password (recommended) or container name, you will have 
 
 variabe|options
 ---|---
-SERVER_SOFTWARE|purpur (default), paper, vanilla
+SERVER_SOFTWARE|**purpur** (default), **paper**, **vanilla**, **fabric** (automatically uses the latest fabric loader avalible for your version), **manual** (```SERVER_JAR``` needed)
 SERVER_VERSION|Any valid minecraft version (default, 1.20.4); **must be the full version, like *1.20.4***
 MIN/MAX_RAM|Any valid java ram amount like **5G** (5 gigabytes) or **1024M** (1024 megabytes); (default 1G on both)
+SERVER_JAR **Optional; only needed if you chose `manual` as your server software*|The filename of your supplied jar. This jar should be placed in the config directory it makes when you run it.
+
 
 - Ports in docker are arranged ```host:container```, meaning that **you can only change the host port**.
 - Same goes for volumes, you can change the *host* volume but not the *container* volume.
 
 ### Building
 As long as you have ``Dockerfile`` and ``install-docker.sh`` in the same directory you are running the build on, it should work like any other docker image.
+
+## Updating
+If you run the script again, it will detect that the directory is already there and run the update process. It will then ask you for your minecraft version and server type and handle the rest for you.
 
 ## Connecting
 You can connect to the minecraft server by putting the server's ip address into the game. But without port forwarding, a proxy, or a vpn, this will not work outside your own network. To fix this you could:

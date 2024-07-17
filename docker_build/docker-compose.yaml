@@ -1,0 +1,16 @@
+# Just a testing compose file
+services:
+  mcsli-docker:
+    container_name: mcsli-docker
+    # Only difference is that it builds the image rather than pulling it down
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./config:/data/minecraft
+    environment:
+      - SERVER_SOFTWARE=purpur
+      - SERVER_VERSION=1.21
+      - MAX_RAM=1G
+      - MIN_RAM=1G
+    ports:
+      - 25565:25565
