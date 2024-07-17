@@ -19,7 +19,7 @@
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
 
 ## Features
-- Adds Java PPA and installs OpenJDK 17.
+- Adds Java PPA and installs OpenJDK 21.
 - Opens ports for Minecraft and SSH.
 - Offers a choice of Minecraft server software: Paper, Purpur, or Vanilla.
 - Downloads the specified version of the selected Minecraft server JAR file.
@@ -29,6 +29,7 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 - Provides customization instructions for `server.properties`.
 
 ## Distributions Tested
+- **Ubuntu Server 24.04**
 - **Ubuntu Server 22.04**
 - **Ubuntu Server 20.04**
 - **Ubuntu Server 18.04**
@@ -40,7 +41,7 @@ Docker image will work with any distro and windows
 1. **Download and run the script:**  
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | bash
 ```
 (Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
@@ -65,7 +66,7 @@ This will install both mcsli & mcsli_webui.
 1. **Download and run the script:**  
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | sh -s --webui
+curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | bash -s --webui
 ```
 (Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
 
