@@ -9,8 +9,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/keepittechie/mcsli?color=red)
 
 ## Table of Contents
-1. [Installing Without the WebUI](#installing-without-the-webui)
-2. [Installing With the WebUI](#installing-with-the-webui)
+1. [Installing the Script](#installing-the-script)
+2. [Uninstalling](#uninstalling)
 3. [Docker Container](#using-the-docker-container)
 4. [Updating](#updating)
 5. [Connecting](#connecting)
@@ -37,7 +37,7 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 
 Docker image will work with any distro and windows
 
-# Installing Without the WebUI 
+## Installing the Script
 
 1. **Download the script:**  
 
@@ -89,6 +89,13 @@ sudo bash ./install.sh
   - `5`: Manual (bring your own server .jar)
 - **Example Answer**: `1`
 
+**Prompt 4: Firewall Installation**
+- **Prompt**: `Choose a firewall to install (1 for UFW, 2 for firewalld):`
+- **Options**:
+  - `1`: UFW
+  - `2`: firewalld
+- **Example Answer**: `1`
+
 </details>
 
 4. **Review and Customize server.properties:**
@@ -103,36 +110,9 @@ Manually start the Minecraft server using the following command:
 sudo systemctl start minecraft.service
 ```
 
-# Installing With the WebUI
+6. **Access the mcsli_webui:**
 
-<img src="mcsli_webui.png" width="600">
-
-This will install both mcsli & mcsli_webui.
-
-1. **Download and run the script:**  
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/keepittechie/mcsli/main/install.sh | bash -s --webui
-```
-(Of course, you should [review it](https://github.com/keepittechie/mcsli/blob/main/install.sh) first)
-
-You can also run the script normally and select yes when it prompts you.
-
-2. **Review and Customize server.properties:**
-
-After the script has completed, you can find the server.properties file in the Minecraft server directory (/opt/minecraft). Customize this file as needed based on your server preferences. Refer to the Official Minecraft Wiki for a detailed list of server properties.
-
-3. **Start the Minecraft Server:**
-
-Manually start the Minecraft server using the following command:
-
-```bash
-sudo systemctl start minecraft.service
-```
-
-4. **Access the mcsli_webui:**
-
-To access the webui goto link:
+To access the webui go to link:
 
 ```bash
 http://localhost:5000
@@ -141,6 +121,29 @@ or
 ```bash
 http://ip-address:5000
 ```
+
+## Uninstalling
+
+1. **Run the Uninstallation Script:**
+
+Execute the install.sh script with the uninstall option. The script must be run with root privileges.
+
+```bash
+cd mcsli
+sudo bash ./install.sh
+```
+
+<details>
+<summary><b>2. Script Prompts and Answers:</b></summary>
+
+**Prompt 1: Uninstall Minecraft Server or WebUI**
+- **Prompt**: `Would you like to uninstall the Minecraft server or the webui?`
+- **Options**:
+  - `1`: Minecraft server
+  - `2`: WebUI
+- **Example Answer**: `1`
+
+</details>
 
 ## Using the docker container
 
@@ -192,9 +195,9 @@ If you run the script again, it will detect that the directory is already there 
 
 ## Connecting
 You can connect to the minecraft server by putting the server's ip address into the game. But without port forwarding, a proxy, or a vpn, this will not work outside your own network. To fix this you could:
-1. **Use a VPN:** There are many selfhosted options to go with, [WireGaurd](https://www.wireguard.com/), [OpenVPN](https://openvpn.net/), [netbird](https://netbird.io/). But the one that is the easiest, in my opinion, is [**tailscale**](https://tailscale.com/). Specifically, the [Github community plan](https://tailscale.dev/blog/multi-user-tailnet-github-orgs). This allows you to invite your friends to your "tailnet" and play on your server with your *tailscale* ip.
-2. **Use a Proxy:** This is by far the easiest way to do it, and the easiest proxy service to use is probably [playit.gg](https://playit.gg/). Simply download the client on your server, create a tunnel for java minecraft, and it will provide you with a domain you can connect to.
-3. **Port forward:** this can vary from router to router, look up online how to do it on yours. The only port you need to forward is 25565 unless you have your own config (ie. If you're using geyser). **This is the most insecure option, as anyone on the internet can see the open port, and potentially expliot it.** The chances of this are very low, but when there are better options out there, I would stay away from this one.
+1. **Use a VPN:** There are many selfhosted options to go with, [WireGuard](https://www.wireguard.com/), [OpenVPN](https://openvpn.net/), [Netbird](https://netbird.io/). But the one that is the easiest, in my opinion, is [**Tailscale**](https://tailscale.com/). Specifically, the [Github community plan](https://tailscale.dev/blog/multi-user-tailnet-github-orgs). This allows you to invite your friends to your "tailnet" and play on your server with your *Tailscale* IP.
+2. **Use a Proxy:** This is by far the easiest way to do it, and the easiest proxy service to use is probably [playit.gg](https://playit.gg/). Simply download the client on your server, create a tunnel for Java Minecraft, and it will provide you with a domain you can connect to.
+3. **Port forward:** this can vary from router to router, look up online how to do it on yours. The only port you need to forward is 25565 unless you have your own config (ie. If you're using geyser). **This is the most insecure option, as anyone on the internet can see the open port, and potentially exploit it.** The chances of this are very low, but when there are better options out there, I would stay away from this one.
 
 ## Important Notes
 
