@@ -9,8 +9,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/keepittechie/mcsli?color=red)
 
 ## Table of Contents
-1. [Installing Without the WebUI](#Installing-Without-the-WebUI)
-2. [Installing With the WebUI](#Installing-With-the-webui)
+1. [Installing Without the WebUI](#installing-without-the-webui)
+2. [Installing With the WebUI](#installing-with-the-webui)
 3. [Docker Container](#using-the-docker-container)
 4. [Updating](#updating)
 5. [Connecting](#connecting)
@@ -21,7 +21,7 @@ This script automates the installation and setup of a Minecraft server on Ubuntu
 ## Features
 - Adds Java PPA and installs OpenJDK 21.
 - Opens ports for Minecraft and SSH.
-- Offers a choice of Minecraft server software: Paper, Purpur, or Vanilla.
+- Offers a choice of Minecraft server software: Paper, Purpur, Vanilla, or Fabric.
 - Downloads the specified version of the selected Minecraft server JAR file.
 - Automatically accepts the Minecraft EULA.
 - Sets file ownership and permissions for security.
@@ -68,36 +68,28 @@ sudo bash ./install.sh
 <details>
 <summary><b>3. Script Prompts and Answers:</b></summary>
 
+**Prompt 1: Web UI Installation**
+- **Prompt**: `Would you like to install the webui? (y/N):`
+- **Options**:
+  - `y` or `Y`: Yes, install the web UI
+  - `N` or `n` (or just press Enter): No, do not install the web UI
+- **Example Answer**: `y`
 
-Prompt 1: Web UI Installation
+**Prompt 2: Minecraft Version**
+- **Prompt**: `What version of Minecraft would you like to use? (e.g., 1.20.4):`
+- **Example Answer**: `1.20.4`
 
-**Prompt**: `Would you like to install the webui? (y/N):`
-**Options**:
-- `y` or `Y`: Yes, install the web UI
-- `N` or `n` (or just press Enter): No, do not install the web UI
-
-**Example Answer**: `y`
-
-Prompt 2: Minecraft Version
-
-**Prompt**: `What version of Minecraft would you like to use? (e.g., 1.20.4):`
-
-**Example Answer**: `1.20.4`
-
-Prompt 3: Server Software Type
-
-**Prompt**: `Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.):`
-**Options**:
-- `1`: Paper
-- `2`: Purpur
-- `3`: Vanilla
-- `4`: Fabric
-- `5`: Manual (bring your own server .jar)
-
-**Example Answer**: `1`
+**Prompt 3: Server Software Type**
+- **Prompt**: `Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.):`
+- **Options**:
+  - `1`: Paper
+  - `2`: Purpur
+  - `3`: Vanilla
+  - `4`: Fabric
+  - `5`: Manual (bring your own server .jar)
+- **Example Answer**: `1`
 
 </details>
-
 
 4. **Review and Customize server.properties:**
 
