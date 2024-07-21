@@ -17,14 +17,15 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y openjdk-21-jre-headless wget curl
+        sudo apt-get install -y openjdk-21-jre-headless wget curl jq shellcheck
 
     - name: Run syntax check
       run: |
-        sudo apt-get install -y shellcheck
         shellcheck install.sh
 
     - name: Run script with validation
+      env:
+        CI_MODE: true
       run: |
         chmod +x ./install.sh
         ./install.sh --check
