@@ -14,7 +14,7 @@
 3. [Docker Container](#using-the-docker-container)
 4. [Updating](#updating)
 5. [Connecting](#connecting)
-6. [YouTube Video](#youtube-video)
+6. [YouTube Video](#youtube-video-link)
 
 ## Introduction/Overview
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
