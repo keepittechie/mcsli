@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-21-jre-headless wget curl
+
+    - name: Run syntax check
+      run: |
+        sudo apt-get install -y shellcheck
+        shellcheck install.sh
+
+    - name: Run script with validation
+      run: |
+        chmod +x ./install.sh
+        ./install.sh --check
+
+    - name: ShellCheck
+      uses: ludeeus/action-shellcheck@2.0.0
+      with:
+        additional_files: "" # Optional: add space-separated list of additional filenames to check
+        ignore: "" # Optional: paths to ignore when running ShellCheck
+        ignore_paths: "" # Optional: paths to ignore when running ShellCheck
+        ignore_names: "" # Optional: names to ignore when running ShellCheck
+        severity: "warning" # Optional: minimum severity of errors to consider
+        check_together: false # Optional: run shellcheck on all files at once, instead of one at a time
+        scandir: "." # Optional: directory to be searched for files
+        disable_matcher: false # Optional: set to true to skip using problem-matcher
+        format: "gcc" # Optional: output format
+        version: "stable" # Optional: specify a concrete version of ShellCheck to use
