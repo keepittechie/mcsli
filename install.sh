@@ -44,35 +44,35 @@ MINECRAFT_DIR="/opt/minecraft"
 MINECRAFT_USER="minecraft"
 
 # Function to log installed packages
-function log_package_installation {
+log_package_installation() {
     PACKAGE_NAME=$1
     LOG_FILE=$2
     echo "$PACKAGE_NAME" | sudo tee -a "$LOG_FILE" > /dev/null 2>&1
 }
 
 # Function for version comparisons
-function version {
+version() {
     echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
 }
 
 # Function to install Java
-function installJava {
+installJava() {
     # Asks the user for their preferred version
     while true; do
-        read -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        read -r -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
 
         # Select which Java version to use
-        if [ "$(version $SERVER_VERSION)" -ge "$(version "1.20.5")" ]; then
+        if [ "$(version "$SERVER_VERSION")" -ge "$(version "1.20.5")" ]; then
             sudo apt install -y openjdk-21-jre-headless > /dev/null 2>&1
             echo -e "${GREEN}Using Java version 21...${NC}"
             log_package_installation "openjdk-21-jre-headless" "$MINECRAFT_LOG"
             break
-        elif [ "$(version $SERVER_VERSION)" -ge "$(version "1.17")" ]; then
+        elif [ "$(version "$SERVER_VERSION")" -ge "$(version "1.17")" ]; then
             sudo apt install -y openjdk-17-jre-headless > /dev/null 2>&1
             echo -e "${GREEN}Using Java version 17...${NC}"
             log_package_installation "openjdk-17-jre-headless" "$MINECRAFT_LOG"
             break
-        elif [ "$(version $SERVER_VERSION)" -ge "$(version "1.8")" ]; then
+        elif [ "$(version "$SERVER_VERSION")" -ge "$(version "1.8")" ]; then
             sudo apt install -y openjdk-8-jre-headless > /dev/null 2>&1
             echo -e "${GREEN}Using Java version 8...${NC}"
             log_package_installation "openjdk-8-jre-headless" "$MINECRAFT_LOG"
@@ -84,7 +84,7 @@ function installJava {
 }
 
 # Function to check if a Minecraft version is available
-function isVersionAvailable {
+isVersionAvailable() {
     local version=$1
     local type=$2
     local url
@@ -112,7 +112,7 @@ function isVersionAvailable {
 }
 
 # Function to install Minecraft JAR
-function installJar {
+installJar() {
     # Download the specific Minecraft server version
     while true; do
         # Present options to the user
@@ -123,7 +123,7 @@ function installJar {
         echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
-        read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
 
         case $SERVER_SOFTWARE_CHOICE in
             1)
@@ -158,7 +158,7 @@ function installJar {
 
                 while ! isVersionAvailable "$SERVER_VERSION" "fabric"; do
                     echo -e "${RED}Version $SERVER_VERSION is not available for fabric. Please enter another version.${NC}"
-                    read -p "Enter a valid version for fabric: " SERVER_VERSION
+                    read -r -p "Enter a valid version for fabric: " SERVER_VERSION
                 done
 
                 loader_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION" | jq -r '[.[] | select(.loader.stable == true)] | sort_by(.loader.build) | last | .loader.version')
@@ -170,7 +170,7 @@ function installJar {
                 SERVER_JAR="$MINECRAFT_DIR/manual-$SERVER_VERSION.jar"
                 echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"$MINECRAFT_DIR\" (Full path \"$MINECRAFT_DIR/manual-$SERVER_VERSION.jar\"). Make sure the minecraft user can access this file."
                 while true; do
-                    read -s -n 1 -p "Press any key once complete..."
+                    read -r -s -n 1 -p "Press any key once complete..."
                     if [ -f "$SERVER_JAR" ]; then
                         echo -e "${GREEN}Minecraft server JAR file found.${NC}"
                         break
@@ -202,9 +202,8 @@ function installJar {
     echo "Minecraft Server Version: $SERVER_VERSION" | sudo tee -a "$MINECRAFT_DIR/server_info.txt" > /dev/null 2>&1
 }
 
-
 # Function to install Minecraft server
-function install {
+install() {
     # Ensure that the Minecraft directory is defined
     if [ -z "$MINECRAFT_DIR" ]; then
         echo -e "${RED}Error: Minecraft directory is not defined.${NC}"
@@ -306,7 +305,7 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/minecraft.service > /
 }
 
 # Function to install WebUI
-function installWebUI {
+installWebUI() {
     echo -e "${GREEN}Installing mcsli_webui...${NC}"
     set -e
 
@@ -348,7 +347,7 @@ EOF
     echo "Choose a firewall to install:"
     echo "1) UFW"
     echo "2) firewalld"
-    read -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+    read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
 
     if [ "$FIREWALL_CHOICE" -eq 1 ]; then
         echo "Configuring UFW..."
@@ -390,11 +389,11 @@ EOF
 }
 
 # Function to uninstall applications
-function uninstall {
+uninstall() {
     echo -e "${GREEN}Would you like to uninstall the Minecraft server or the webui?${NC}"
     echo "1) Minecraft server"
     echo "2) WebUI"
-    read -p "Enter your choice (1 for Minecraft, 2 for WebUI): " UNINSTALL_CHOICE
+    read -r -p "Enter your choice (1 for Minecraft, 2 for WebUI): " UNINSTALL_CHOICE
 
     case $UNINSTALL_CHOICE in
         1)
@@ -429,12 +428,12 @@ function uninstall {
 echo -e "${GREEN}Would you like to install or uninstall?${NC}"
 echo "1) Install"
 echo "2) Uninstall"
-read -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
+read -r -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
 
 case $ACTION_CHOICE in
     1)
         echo -e "${GREEN}Would you like to install the webui?${NC}"
-        read -p "(y/N): " WEBUI_CHOICE
+        read -r -p "(y/N): " WEBUI_CHOICE
         case $WEBUI_CHOICE in
             y|Y|yes)
                 installWebUI
@@ -460,7 +459,7 @@ case $ACTION_CHOICE in
                 echo "Choose a firewall to install:"
                 echo "1) UFW"
                 echo "2) firewalld"
-                read -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+                read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
             fi
             echo -e "${GREEN}$MINECRAFT_DIR does not exist, doing first-time setup...${NC}"
             install
