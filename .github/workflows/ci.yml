@@ -25,7 +25,11 @@ jobs:
 
     - name: Run script with validation
       env:
-        CI_MODE: true
+        CI_MODE: "true"
+        SERVER_VERSION: "1.20.4"
+        SERVER_SOFTWARE_CHOICE: "1"
+        FIREWALL_CHOICE: "1"
+        WEBUI_CHOICE: "n"
       run: |
         chmod +x ./install.sh
         ./install.sh --check
