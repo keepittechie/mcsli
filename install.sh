@@ -44,47 +44,59 @@ MINECRAFT_DIR="/opt/minecraft"
 MINECRAFT_USER="minecraft"
 
 # Function to log installed packages
-function log_package_installation {
+log_package_installation() {
     PACKAGE_NAME=$1
     LOG_FILE=$2
     echo "$PACKAGE_NAME" | sudo tee -a "$LOG_FILE" > /dev/null 2>&1
 }
 
 # Function for version comparisons
-function version {
+version() {
     echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'
 }
 
 # Function to install Java
-function installJava {
+installJava() {
+    # Use SERVER_VERSION from CI_MODE if available
+    if [ -n "$CI_MODE" ]; then
+        echo -e "${GREEN}CI Mode: Using predefined Minecraft version $SERVER_VERSION${NC}"
+    fi
+
     # Asks the user for their preferred version
     while true; do
-        read -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        if [ -z "$SERVER_VERSION" ]; then
+            read -r -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        fi
 
         # Select which Java version to use
-        if [ "$(version $SERVER_VERSION)" -ge "$(version "1.20.5")" ]; then
+        if [ "$(version "$SERVER_VERSION")" -ge "$(version "1.20.5")" ]; then
             sudo apt install -y openjdk-21-jre-headless > /dev/null 2>&1
             echo -e "${GREEN}Using Java version 21...${NC}"
             log_package_installation "openjdk-21-jre-headless" "$MINECRAFT_LOG"
             break
-        elif [ "$(version $SERVER_VERSION)" -ge "$(version "1.17")" ]; then
+        elif [ "$(version "$SERVER_VERSION")" -ge "$(version "1.17")" ]; then
             sudo apt install -y openjdk-17-jre-headless > /dev/null 2>&1
             echo -e "${GREEN}Using Java version 17...${NC}"
             log_package_installation "openjdk-17-jre-headless" "$MINECRAFT_LOG"
             break
-        elif [ "$(version $SERVER_VERSION)" -ge "$(version "1.8")" ]; then
+        elif [ "$(version "$SERVER_VERSION")" -ge "$(version "1.8")" ]; then
             sudo apt install -y openjdk-8-jre-headless > /dev/null 2>&1
             echo -e "${GREEN}Using Java version 8...${NC}"
             log_package_installation "openjdk-8-jre-headless" "$MINECRAFT_LOG"
             break
         else
             echo -e "${RED}Invalid version. Please enter a valid Minecraft version.${NC}"
+            if [ -n "$CI_MODE" ]; then
+                exit 1
+            else
+                SERVER_VERSION=""
+            fi
         fi
     done
 }
 
 # Function to check if a Minecraft version is available
-function isVersionAvailable {
+isVersionAvailable() {
     local version=$1
     local type=$2
     local url
@@ -112,7 +124,12 @@ function isVersionAvailable {
 }
 
 # Function to install Minecraft JAR
-function installJar {
+installJar() {
+    # Use SERVER_SOFTWARE_CHOICE from CI_MODE if available
+    if [ -n "$CI_MODE" ]; then
+        echo -e "${GREEN}CI Mode: Using predefined server software choice $SERVER_SOFTWARE_CHOICE${NC}"
+    fi
+
     # Download the specific Minecraft server version
     while true; do
         # Present options to the user
@@ -123,157 +140,60 @@ function installJar {
         echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
-        read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        if [ -z "$SERVER_SOFTWARE_CHOICE" ]; then
+            read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        fi
 
         case $SERVER_SOFTWARE_CHOICE in
             1)
                 SERVER_SOFTWARE="paper"
-                # Downloads curl and jq because of paper API limitations
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
 
-                while ! isVersionAvailable "$SERVER_VERSION" "paper"; do
-                    echo -e "${RED}Version $SERVER_VERSION is not available for paper. Please enter another version.${NC}"
-                    read -p "Enter a valid version for paper: " SERVER_VERSION
-                done
-
-                # Get the build number of the most recent build
                 latest_build="$(curl -sX GET "https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds" -H 'accept: application/json' | jq '.builds[-1].build')"
-
-                # Construct download URL
                 download_url="https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds/$latest_build/downloads/paper-$SERVER_VERSION-$latest_build.jar"
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             2)
                 SERVER_SOFTWARE="purpur"
-                # Downloads curl and jq because of purpur API limitations
-                sudo apt install -y curl jq > /dev/null 2>&1
-                log_package_installation "curl" "$MINECRAFT_LOG"
-                log_package_installation "jq" "$MINECRAFT_LOG"
-
-                while ! isVersionAvailable "$SERVER_VERSION" "purpur"; do
-                    echo -e "${RED}Version $SERVER_VERSION is not available for purpur. Please enter another version.${NC}"
-                    read -p "Enter a valid version for purpur: " SERVER_VERSION
-                done
-
-                # Construct download URL
                 download_url="https://api.purpurmc.org/v2/purpur/$SERVER_VERSION/latest/download"
-                
-                echo "Download URL: $download_url" # Debug message
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/purpur-$SERVER_VERSION.jar"
-
-                # Ensure the directory exists
-                sudo mkdir -p "$MINECRAFT_DIR"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-                echo "Download completed" # Debug message
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             3)
                 SERVER_SOFTWARE="vanilla"
-                # Downloads curl and jq because of Mojang API limitations
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
 
-                while ! isVersionAvailable "$SERVER_VERSION" "vanilla"; do
-                    echo -e "${RED}Version $SERVER_VERSION is not available for vanilla. Please enter another version.${NC}"
-                    read -p "Enter a valid version for vanilla: " SERVER_VERSION
-                done
-
-                # Get the download URL from Mojang
                 download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
-
-                echo "Download URL: $download_url" # Debug message
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/minecraft_server.$SERVER_VERSION.jar"
-
-                # Ensure the directory exists
-                sudo mkdir -p "$MINECRAFT_DIR"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-                echo "Download completed" # Debug message
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             4)
                 SERVER_SOFTWARE="fabric"
-                # Downloads curl and jq because of Mojang API limitations
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
 
                 while ! isVersionAvailable "$SERVER_VERSION" "fabric"; do
                     echo -e "${RED}Version $SERVER_VERSION is not available for fabric. Please enter another version.${NC}"
-                    read -p "Enter a valid version for fabric: " SERVER_VERSION
+                    if [ -n "$CI_MODE" ]; then
+                        exit 1
+                    else
+                        read -r -p "Enter a valid version for fabric: " SERVER_VERSION
+                    fi
                 done
 
-                # Get the latest fabric loader version
                 loader_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION" | jq -r '[.[] | select(.loader.stable == true)] | sort_by(.loader.build) | last | .loader.version')
-
-                # Get the latest server installer version
                 installer_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/installer" | jq -r '[.[] | select(.stable == true)] | sort_by(.version) | last | .version')
-
-                # Assemble download URL
                 download_url="https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION/$loader_version/$installer_version/server/jar"
-
-                echo "Download URL: $download_url" # Debug message
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/fabric-$SERVER_VERSION.jar"
-
-                # Ensure the directory exists
-                sudo mkdir -p "$MINECRAFT_DIR"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-                echo "Download completed" # Debug message
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             5)
                 SERVER_JAR="$MINECRAFT_DIR/manual-$SERVER_VERSION.jar"
                 echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"$MINECRAFT_DIR\" (Full path \"$MINECRAFT_DIR/manual-$SERVER_VERSION.jar\"). Make sure the minecraft user can access this file."
                 while true; do
-                    read -s -n 1 -p "Press any key once complete..."
+                    read -r -s -n 1 -p "Press any key once complete..."
                     if [ -f "$SERVER_JAR" ]; then
                         echo -e "${GREEN}Minecraft server JAR file found.${NC}"
                         break
@@ -281,25 +201,33 @@ function installJar {
                         echo -e "${RED}Failed to find the Minecraft server JAR file. Try again.${NC}"
                     fi
                 done
-
                 break
                 ;;
             *)
                 echo "Not a valid response, try again."
                 ;;
         esac
+
+        if [ "$SERVER_SOFTWARE_CHOICE" -ne 5 ]; then
+            sudo mkdir -p "$MINECRAFT_DIR"
+            curl -o "$SERVER_JAR" "$download_url" > /dev/null 2>&1
+
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
+                exit 1
+            fi
+        fi
+
+        break
     done
 
-    # Set server jar name based on the user's choice
-    SERVER_JAR="$MINECRAFT_DIR/$SERVER_SOFTWARE-$SERVER_VERSION.jar"
-
-    # Write Minecraft server type and version to a text file
     echo "Minecraft Server Type: $SERVER_SOFTWARE" | sudo tee "$MINECRAFT_DIR/server_info.txt" > /dev/null 2>&1
     echo "Minecraft Server Version: $SERVER_VERSION" | sudo tee -a "$MINECRAFT_DIR/server_info.txt" > /dev/null 2>&1
 }
 
+
 # Function to install Minecraft server
-function install {
+install() {
     # Ensure that the Minecraft directory is defined
     if [ -z "$MINECRAFT_DIR" ]; then
         echo -e "${RED}Error: Minecraft directory is not defined.${NC}"
@@ -401,7 +329,7 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/minecraft.service > /
 }
 
 # Function to install WebUI
-function installWebUI {
+installWebUI() {
     echo -e "${GREEN}Installing mcsli_webui...${NC}"
     set -e
 
@@ -443,7 +371,7 @@ EOF
     echo "Choose a firewall to install:"
     echo "1) UFW"
     echo "2) firewalld"
-    read -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+    read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
 
     if [ "$FIREWALL_CHOICE" -eq 1 ]; then
         echo "Configuring UFW..."
@@ -485,11 +413,11 @@ EOF
 }
 
 # Function to uninstall applications
-function uninstall {
+uninstall() {
     echo -e "${GREEN}Would you like to uninstall the Minecraft server or the webui?${NC}"
     echo "1) Minecraft server"
     echo "2) WebUI"
-    read -p "Enter your choice (1 for Minecraft, 2 for WebUI): " UNINSTALL_CHOICE
+    read -r -p "Enter your choice (1 for Minecraft, 2 for WebUI): " UNINSTALL_CHOICE
 
     case $UNINSTALL_CHOICE in
         1)
@@ -521,51 +449,60 @@ function uninstall {
     esac
 }
 
-echo -e "${GREEN}Would you like to install or uninstall?${NC}"
-echo "1) Install"
-echo "2) Uninstall"
-read -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
+if [ -z "$CI_MODE" ]; then
+  echo -e "${GREEN}Would you like to install or uninstall?${NC}"
+  echo "1) Install"
+  echo "2) Uninstall"
+  read -r -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
 
-case $ACTION_CHOICE in
-    1)
-        echo -e "${GREEN}Would you like to install the webui?${NC}"
-        read -p "(y/N): " WEBUI_CHOICE
-        case $WEBUI_CHOICE in
-            y|Y|yes)
-                installWebUI
-                ;;
-            *)
-                echo -e "${GREEN}Not installing webui...${NC}"
-                ;;
-        esac
+  case $ACTION_CHOICE in
+      1)
+          echo -e "${GREEN}Would you like to install the webui?${NC}"
+          read -r -p "(y/N): " WEBUI_CHOICE
+          case $WEBUI_CHOICE in
+              y|Y|yes)
+                  installWebUI
+                  ;;
+              *)
+                  echo -e "${GREEN}Not installing webui...${NC}"
+                  ;;
+          esac
 
-        if [ -d "$MINECRAFT_DIR" ]; then
-            echo -e "${GREEN}$MINECRAFT_DIR already exists, updating server...${NC}"
-            echo -e "${GREEN}Uninstalling other java versions...${NC}"
-            echo -e "${YELLOW}Don't worry if you see 'Package 'openjdk-VERSION-jre-headless' is not installed, so not removed', this is normal${NC}"
-            sudo apt remove openjdk-21-jre-headless openjdk-17-jre-headless openjdk-8-jre-headless > /dev/null 2>&1
-            sudo rm -f "$MINECRAFT_LOG"
-            installJava
-            installJar
-            echo -e "${GREEN}Done updating${NC}"
-            echo "You can start the server with"
-            echo "sudo systemctl start minecraft.service${NC}"
-        else
-            if [ -z "$FIREWALL_CHOICE" ]; then
-                echo "Choose a firewall to install:"
-                echo "1) UFW"
-                echo "2) firewalld"
-                read -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
-            fi
-            echo -e "${GREEN}$MINECRAFT_DIR does not exist, doing first-time setup...${NC}"
-            install
-        fi
-        ;;
-    2)
-        uninstall
-        ;;
-    *)
-        echo "Invalid choice. Exiting."
-        exit 1
-        ;;
-esac
+          if [ -d "$MINECRAFT_DIR" ]; then
+              echo -e "${GREEN}$MINECRAFT_DIR already exists, updating server...${NC}"
+              echo -e "${GREEN}Uninstalling other java versions...${NC}"
+              echo -e "${YELLOW}Don't worry if you see 'Package 'openjdk-VERSION-jre-headless' is not installed, so not removed', this is normal${NC}"
+              sudo apt remove openjdk-21-jre-headless openjdk-17-jre-headless openjdk-8-jre-headless > /dev/null 2>&1
+              sudo rm -f "$MINECRAFT_LOG"
+              installJava
+              installJar
+              echo -e "${GREEN}Done updating${NC}"
+              echo "You can start the server with"
+              echo "sudo systemctl start minecraft.service${NC}"
+          else
+              if [ -z "$FIREWALL_CHOICE" ]; then
+                  echo "Choose a firewall to install:"
+                  echo "1) UFW"
+                  echo "2) firewalld"
+                  read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+              fi
+              echo -e "${GREEN}$MINECRAFT_DIR does not exist, doing first-time setup...${NC}"
+              install
+          fi
+          ;;
+      2)
+          uninstall
+          ;;
+      *)
+          echo "Invalid choice. Exiting."
+          exit 1
+          ;;
+  esac
+else
+  SERVER_VERSION=${SERVER_VERSION:-"1.20.4"}
+  SERVER_SOFTWARE_CHOICE=${SERVER_SOFTWARE_CHOICE:-"1"}
+  FIREWALL_CHOICE=${FIREWALL_CHOICE:-"1"}
+  WEBUI_CHOICE=${WEBUI_CHOICE:-"n"}
+  
+  install
+fi
