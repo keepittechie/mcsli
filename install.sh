@@ -112,7 +112,7 @@ isVersionAvailable() {
 }
 
 # Function to install Minecraft JAR
-function installJar {
+installJar() {
     # Download the specific Minecraft server version
     while true; do
         # Present options to the user
@@ -123,7 +123,7 @@ function installJar {
         echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
-        read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
 
         case $SERVER_SOFTWARE_CHOICE in
             1)
