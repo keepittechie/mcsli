@@ -112,7 +112,7 @@ isVersionAvailable() {
 }
 
 # Function to install Minecraft JAR
-installJar() {
+function installJar {
     # Download the specific Minecraft server version
     while true; do
         # Present options to the user
@@ -123,7 +123,7 @@ installJar() {
         echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
-        read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        read -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
 
         case $SERVER_SOFTWARE_CHOICE in
             1)
@@ -426,59 +426,60 @@ uninstall() {
     esac
 }
 
-echo -e "${GREEN}Would you like to install or uninstall?${NC}"
-echo "1) Install"
-echo "2) Uninstall"
-read -r -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
+if [ -z "$CI_MODE" ]; then
+  echo -e "${GREEN}Would you like to install or uninstall?${NC}"
+  echo "1) Install"
+  echo "2) Uninstall"
+  read -r -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
 
-if [ -n "$CI_MODE" ]; then
-    ACTION_CHOICE=1
-    SERVER_VERSION="1.20.4"
-    SERVER_SOFTWARE_CHOICE=1
-    FIREWALL_CHOICE=1
-    WEBUI_CHOICE="n"
+  case $ACTION_CHOICE in
+      1)
+          echo -e "${GREEN}Would you like to install the webui?${NC}"
+          read -r -p "(y/N): " WEBUI_CHOICE
+          case $WEBUI_CHOICE in
+              y|Y|yes)
+                  installWebUI
+                  ;;
+              *)
+                  echo -e "${GREEN}Not installing webui...${NC}"
+                  ;;
+          esac
+
+          if [ -d "$MINECRAFT_DIR" ]; then
+              echo -e "${GREEN}$MINECRAFT_DIR already exists, updating server...${NC}"
+              echo -e "${GREEN}Uninstalling other java versions...${NC}"
+              echo -e "${YELLOW}Don't worry if you see 'Package 'openjdk-VERSION-jre-headless' is not installed, so not removed', this is normal${NC}"
+              sudo apt remove openjdk-21-jre-headless openjdk-17-jre-headless openjdk-8-jre-headless > /dev/null 2>&1
+              sudo rm -f "$MINECRAFT_LOG"
+              installJava
+              installJar
+              echo -e "${GREEN}Done updating${NC}"
+              echo "You can start the server with"
+              echo "sudo systemctl start minecraft.service${NC}"
+          else
+              if [ -z "$FIREWALL_CHOICE" ]; then
+                  echo "Choose a firewall to install:"
+                  echo "1) UFW"
+                  echo "2) firewalld"
+                  read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+              fi
+              echo -e "${GREEN}$MINECRAFT_DIR does not exist, doing first-time setup...${NC}"
+              install
+          fi
+          ;;
+      2)
+          uninstall
+          ;;
+      *)
+          echo "Invalid choice. Exiting."
+          exit 1
+          ;;
+  esac
+else
+  SERVER_VERSION=${SERVER_VERSION:-"1.20.4"}
+  SERVER_SOFTWARE_CHOICE=${SERVER_SOFTWARE_CHOICE:-"1"}
+  FIREWALL_CHOICE=${FIREWALL_CHOICE:-"1"}
+  WEBUI_CHOICE=${WEBUI_CHOICE:-"n"}
+  
+  install
 fi
-
-case $ACTION_CHOICE in
-    1)
-        echo -e "${GREEN}Would you like to install the webui?${NC}"
-        read -r -p "(y/N): " WEBUI_CHOICE
-        case $WEBUI_CHOICE in
-            y|Y|yes)
-                installWebUI
-                ;;
-            *)
-                echo -e "${GREEN}Not installing webui...${NC}"
-                ;;
-        esac
-
-        if [ -d "$MINECRAFT_DIR" ]; then
-            echo -e "${GREEN}$MINECRAFT_DIR already exists, updating server...${NC}"
-            echo -e "${GREEN}Uninstalling other java versions...${NC}"
-            echo -e "${YELLOW}Don't worry if you see 'Package 'openjdk-VERSION-jre-headless' is not installed, so not removed', this is normal${NC}"
-            sudo apt remove openjdk-21-jre-headless openjdk-17-jre-headless openjdk-8-jre-headless > /dev/null 2>&1
-            sudo rm -f "$MINECRAFT_LOG"
-            installJava
-            installJar
-            echo -e "${GREEN}Done updating${NC}"
-            echo "You can start the server with"
-            echo "sudo systemctl start minecraft.service${NC}"
-        else
-            if [ -z "$FIREWALL_CHOICE" ]; then
-                echo "Choose a firewall to install:"
-                echo "1) UFW"
-                echo "2) firewalld"
-                read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
-            fi
-            echo -e "${GREEN}$MINECRAFT_DIR does not exist, doing first-time setup...${NC}"
-            install
-        fi
-        ;;
-    2)
-        uninstall
-        ;;
-    *)
-        echo "Invalid choice. Exiting."
-        exit 1
-        ;;
-esac
