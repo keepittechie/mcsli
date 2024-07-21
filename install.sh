@@ -57,9 +57,16 @@ version() {
 
 # Function to install Java
 installJava() {
+    # Use SERVER_VERSION from CI_MODE if available
+    if [ -n "$CI_MODE" ]; then
+        echo -e "${GREEN}CI Mode: Using predefined Minecraft version $SERVER_VERSION${NC}"
+    fi
+
     # Asks the user for their preferred version
     while true; do
-        read -r -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        if [ -z "$SERVER_VERSION" ]; then
+            read -r -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        fi
 
         # Select which Java version to use
         if [ "$(version "$SERVER_VERSION")" -ge "$(version "1.20.5")" ]; then
@@ -79,6 +86,11 @@ installJava() {
             break
         else
             echo -e "${RED}Invalid version. Please enter a valid Minecraft version.${NC}"
+            if [ -n "$CI_MODE" ]; then
+                exit 1
+            else
+                SERVER_VERSION=""
+            fi
         fi
     done
 }
@@ -113,6 +125,11 @@ isVersionAvailable() {
 
 # Function to install Minecraft JAR
 installJar() {
+    # Use SERVER_SOFTWARE_CHOICE from CI_MODE if available
+    if [ -n "$CI_MODE" ]; then
+        echo -e "${GREEN}CI Mode: Using predefined server software choice $SERVER_SOFTWARE_CHOICE${NC}"
+    fi
+
     # Download the specific Minecraft server version
     while true; do
         # Present options to the user
@@ -123,7 +140,9 @@ installJar() {
         echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
-        read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        if [ -z "$SERVER_SOFTWARE_CHOICE" ]; then
+            read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        fi
 
         case $SERVER_SOFTWARE_CHOICE in
             1)
@@ -158,7 +177,11 @@ installJar() {
 
                 while ! isVersionAvailable "$SERVER_VERSION" "fabric"; do
                     echo -e "${RED}Version $SERVER_VERSION is not available for fabric. Please enter another version.${NC}"
-                    read -r -p "Enter a valid version for fabric: " SERVER_VERSION
+                    if [ -n "$CI_MODE" ]; then
+                        exit 1
+                    else
+                        read -r -p "Enter a valid version for fabric: " SERVER_VERSION
+                    fi
                 done
 
                 loader_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION" | jq -r '[.[] | select(.loader.stable == true)] | sort_by(.loader.build) | last | .loader.version')
