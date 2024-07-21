@@ -14,6 +14,7 @@
 3. [Docker Container](#using-the-docker-container)
 4. [Updating](#updating)
 5. [Connecting](#connecting)
+6. [YouTube Video](#youtube-video)
 
 ## Introduction/Overview
 This script automates the installation and setup of a Minecraft server on Ubuntu Server 22.04. It simplifies the process of getting a Minecraft server operational by handling tasks such as installing necessary packages, opening ports, downloading the server JAR file, accepting the Minecraft EULA, setting file ownership and permissions, and creating a systemd service for server management.
@@ -206,6 +207,9 @@ You can connect to the minecraft server by putting the server's ip address into 
 - **Review the Script:** Always review the script's code before running it on your server to ensure it meets your requirements and to understand the changes it will make.
 - **Static IP Address:** It is recommended to set a static IP address for your server to ensure that players can consistently connect to it.
 - **Security Considerations:** The script makes changes to system configurations and opens network ports. Run the script in a secure and controlled environment.
+
+#### Youtube Video: [Link](https://youtu.be/F1hI-dlrl1s)
+![Youtube](https://img.youtube.com/vi/F1hI-dlrl1s/maxresdefault.jpg)
 
 ## Contributing
 
