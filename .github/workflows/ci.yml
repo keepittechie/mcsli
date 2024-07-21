@@ -32,18 +32,15 @@ jobs:
         WEBUI_CHOICE: "n"
       run: |
         chmod +x ./install.sh
-        ./install.sh
+        ./install.sh --check
 
     - name: ShellCheck
       uses: ludeeus/action-shellcheck@2.0.0
       with:
-        additional_files: "" # Optional: add space-separated list of additional filenames to check
-        ignore: "" # Optional: paths to ignore when running ShellCheck
         ignore_paths: "" # Optional: paths to ignore when running ShellCheck
         ignore_names: "" # Optional: names to ignore when running ShellCheck
         severity: "warning" # Optional: minimum severity of errors to consider
         check_together: false # Optional: run shellcheck on all files at once, instead of one at a time
         scandir: "." # Optional: directory to be searched for files
-        disable_matcher: false # Optional: set to true to skip using problem-matcher
         format: "gcc" # Optional: output format
         version: "stable" # Optional: specify a concrete version of ShellCheck to use
