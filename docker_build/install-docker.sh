@@ -6,7 +6,6 @@
 # ANSI color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-BLUE='\033[0;34m'
 NC='\033[0;0m' # No Color
 
 # Define Minecraft server directory
@@ -23,17 +22,14 @@ version() {
 if [ "$(version "$SERVER_VERSION")" -ge "$(version "1.20.5")" ]; then
     export JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
     export PATH="$JAVA_HOME/bin:$PATH"
-    JAVA_BINARY="$JAVA_HOME/bin/java"
     echo "Using java version 21..."
 elif [ "$(version "$SERVER_VERSION")" -ge "$(version "1.17")" ]; then
     export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
     export PATH="$JAVA_HOME/bin:$PATH"
-    JAVA_BINARY="$JAVA_HOME/bin/java"
     echo "Using java version 17..."
 else
     export JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
     export PATH="$JAVA_HOME/bin:$PATH"
-    JAVA_BINARY="$JAVA_HOME/bin/java"
     echo "Using java version 8..."
 fi
 
