@@ -59,7 +59,11 @@ version() {
 installJava() {
     # Asks the user for their preferred version
     while true; do
-        read -r -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        if [ "$CI_MODE" == "true" ]; then
+            SERVER_VERSION="1.20.4"
+        else
+            read -r -p "What version of Minecraft would you like to use? (e.g., 1.20.4): " SERVER_VERSION
+        fi
 
         # Select which Java version to use
         if [ "$(version "$SERVER_VERSION")" -ge "$(version "1.20.5")" ]; then
@@ -79,6 +83,7 @@ installJava() {
             break
         else
             echo -e "${RED}Invalid version. Please enter a valid Minecraft version.${NC}"
+            [ "$CI_MODE" == "true" ] && exit 1
         fi
     done
 }
@@ -123,7 +128,11 @@ installJar() {
         echo -e "${NC}5) manual:${NC} Bring your own server .jar"
 
         # Ask the user for their choice of server software
-        read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        if [ "$CI_MODE" == "true" ]; then
+            SERVER_SOFTWARE_CHOICE=1
+        else
+            read -r -p "Choose your server software (1 for paper, 2 for purpur, 3 for vanilla, etc.): " SERVER_SOFTWARE_CHOICE
+        fi
 
         case $SERVER_SOFTWARE_CHOICE in
             1)
@@ -158,6 +167,7 @@ installJar() {
 
                 while ! isVersionAvailable "$SERVER_VERSION" "fabric"; do
                     echo -e "${RED}Version $SERVER_VERSION is not available for fabric. Please enter another version.${NC}"
+                    [ "$CI_MODE" == "true" ] && exit 1
                     read -r -p "Enter a valid version for fabric: " SERVER_VERSION
                 done
 
@@ -170,7 +180,7 @@ installJar() {
                 SERVER_JAR="$MINECRAFT_DIR/manual-$SERVER_VERSION.jar"
                 echo "Please name your jar file \"manual-$SERVER_VERSION.jar\" and place it inside \"$MINECRAFT_DIR\" (Full path \"$MINECRAFT_DIR/manual-$SERVER_VERSION.jar\"). Make sure the minecraft user can access this file."
                 while true; do
-                    read -r -s -n 1 -p "Press any key once complete..."
+                    read -s -n 1 -p "Press any key once complete..."
                     if [ -f "$SERVER_JAR" ]; then
                         echo -e "${GREEN}Minecraft server JAR file found.${NC}"
                         break
@@ -347,7 +357,11 @@ EOF
     echo "Choose a firewall to install:"
     echo "1) UFW"
     echo "2) firewalld"
-    read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+    if [ "$CI_MODE" == "true" ]; then
+        FIREWALL_CHOICE=1
+    else
+        read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+    fi
 
     if [ "$FIREWALL_CHOICE" -eq 1 ]; then
         echo "Configuring UFW..."
@@ -393,7 +407,11 @@ uninstall() {
     echo -e "${GREEN}Would you like to uninstall the Minecraft server or the webui?${NC}"
     echo "1) Minecraft server"
     echo "2) WebUI"
-    read -r -p "Enter your choice (1 for Minecraft, 2 for WebUI): " UNINSTALL_CHOICE
+    if [ "$CI_MODE" == "true" ]; then
+        UNINSTALL_CHOICE=1
+    else
+        read -r -p "Enter your choice (1 for Minecraft, 2 for WebUI): " UNINSTALL_CHOICE
+    fi
 
     case $UNINSTALL_CHOICE in
         1)
@@ -428,12 +446,20 @@ uninstall() {
 echo -e "${GREEN}Would you like to install or uninstall?${NC}"
 echo "1) Install"
 echo "2) Uninstall"
-read -r -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
+if [ "$CI_MODE" == "true" ]; then
+    ACTION_CHOICE=1
+else
+    read -r -p "Enter your choice (1 for install, 2 for uninstall): " ACTION_CHOICE
+fi
 
 case $ACTION_CHOICE in
     1)
         echo -e "${GREEN}Would you like to install the webui?${NC}"
-        read -r -p "(y/N): " WEBUI_CHOICE
+        if [ "$CI_MODE" == "true" ]; then
+            WEBUI_CHOICE="n"
+        else
+            read -r -p "(y/N): " WEBUI_CHOICE
+        fi
         case $WEBUI_CHOICE in
             y|Y|yes)
                 installWebUI
@@ -459,7 +485,11 @@ case $ACTION_CHOICE in
                 echo "Choose a firewall to install:"
                 echo "1) UFW"
                 echo "2) firewalld"
-                read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+                if [ "$CI_MODE" == "true" ]; then
+                    FIREWALL_CHOICE=1
+                else
+                    read -r -p "Enter your choice (1 for UFW, 2 for firewalld): " FIREWALL_CHOICE
+                fi
             fi
             echo -e "${GREEN}$MINECRAFT_DIR does not exist, doing first-time setup...${NC}"
             install
