@@ -32,7 +32,7 @@ jobs:
         WEBUI_CHOICE: "n"
       run: |
         chmod +x ./install.sh
-        ./install.sh --check
+        ./install.sh
 
     - name: ShellCheck
       uses: ludeeus/action-shellcheck@2.0.0
