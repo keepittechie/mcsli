@@ -128,109 +128,30 @@ function installJar {
         case $SERVER_SOFTWARE_CHOICE in
             1)
                 SERVER_SOFTWARE="paper"
-                # Downloads curl and jq because of paper API limitations
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
 
-                while ! isVersionAvailable "$SERVER_VERSION" "paper"; do
-                    echo -e "${RED}Version $SERVER_VERSION is not available for paper. Please enter another version.${NC}"
-                    read -p "Enter a valid version for paper: " SERVER_VERSION
-                done
-
-                # Get the build number of the most recent build
                 latest_build="$(curl -sX GET "https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds" -H 'accept: application/json' | jq '.builds[-1].build')"
-
-                # Construct download URL
                 download_url="https://papermc.io/api/v2/projects/paper/versions/$SERVER_VERSION/builds/$latest_build/downloads/paper-$SERVER_VERSION-$latest_build.jar"
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/paper-$SERVER_VERSION.jar"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             2)
                 SERVER_SOFTWARE="purpur"
-                # Downloads curl and jq because of purpur API limitations
-                sudo apt install -y curl jq > /dev/null 2>&1
-                log_package_installation "curl" "$MINECRAFT_LOG"
-                log_package_installation "jq" "$MINECRAFT_LOG"
-
-                while ! isVersionAvailable "$SERVER_VERSION" "purpur"; do
-                    echo -e "${RED}Version $SERVER_VERSION is not available for purpur. Please enter another version.${NC}"
-                    read -p "Enter a valid version for purpur: " SERVER_VERSION
-                done
-
-                # Construct download URL
                 download_url="https://api.purpurmc.org/v2/purpur/$SERVER_VERSION/latest/download"
-                
-                echo "Download URL: $download_url" # Debug message
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/purpur-$SERVER_VERSION.jar"
-
-                # Ensure the directory exists
-                sudo mkdir -p "$MINECRAFT_DIR"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-                echo "Download completed" # Debug message
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             3)
                 SERVER_SOFTWARE="vanilla"
-                # Downloads curl and jq because of Mojang API limitations
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
 
-                while ! isVersionAvailable "$SERVER_VERSION" "vanilla"; do
-                    echo -e "${RED}Version $SERVER_VERSION is not available for vanilla. Please enter another version.${NC}"
-                    read -p "Enter a valid version for vanilla: " SERVER_VERSION
-                done
-
-                # Get the download URL from Mojang
                 download_url=$(curl -sX GET "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg ver "$SERVER_VERSION" '.versions[] | select(.id == $ver) | .url' | xargs curl -s | jq -r '.downloads.server.url')
-
-                echo "Download URL: $download_url" # Debug message
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/minecraft_server.$SERVER_VERSION.jar"
-
-                # Ensure the directory exists
-                sudo mkdir -p "$MINECRAFT_DIR"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-                echo "Download completed" # Debug message
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             4)
                 SERVER_SOFTWARE="fabric"
-                # Downloads curl and jq because of Mojang API limitations
                 sudo apt install -y curl jq > /dev/null 2>&1
                 log_package_installation "curl" "$MINECRAFT_LOG"
                 log_package_installation "jq" "$MINECRAFT_LOG"
@@ -240,34 +161,10 @@ function installJar {
                     read -p "Enter a valid version for fabric: " SERVER_VERSION
                 done
 
-                # Get the latest fabric loader version
                 loader_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION" | jq -r '[.[] | select(.loader.stable == true)] | sort_by(.loader.build) | last | .loader.version')
-
-                # Get the latest server installer version
                 installer_version=$(curl -sX GET "https://meta.fabricmc.net/v2/versions/installer" | jq -r '[.[] | select(.stable == true)] | sort_by(.version) | last | .version')
-
-                # Assemble download URL
                 download_url="https://meta.fabricmc.net/v2/versions/loader/$SERVER_VERSION/$loader_version/$installer_version/server/jar"
-
-                echo "Download URL: $download_url" # Debug message
-
-                # Set SERVER_JAR after download
                 SERVER_JAR="$MINECRAFT_DIR/fabric-$SERVER_VERSION.jar"
-
-                # Ensure the directory exists
-                sudo mkdir -p "$MINECRAFT_DIR"
-
-                # Download file
-                wget -O "$SERVER_JAR" "$download_url" > /dev/null 2>&1
-                echo "Download completed" # Debug message
-
-                # Verify download
-                if [ ! -f "$SERVER_JAR" ]; then
-                    echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
-                    exit 1
-                fi
-
-                break
                 ;;
             5)
                 SERVER_JAR="$MINECRAFT_DIR/manual-$SERVER_VERSION.jar"
@@ -281,22 +178,30 @@ function installJar {
                         echo -e "${RED}Failed to find the Minecraft server JAR file. Try again.${NC}"
                     fi
                 done
-
                 break
                 ;;
             *)
                 echo "Not a valid response, try again."
                 ;;
         esac
+
+        if [ "$SERVER_SOFTWARE_CHOICE" -ne 5 ]; then
+            sudo mkdir -p "$MINECRAFT_DIR"
+            curl -o "$SERVER_JAR" "$download_url" > /dev/null 2>&1
+
+            if [ ! -f "$SERVER_JAR" ]; then
+                echo -e "${RED}Failed to download the Minecraft server JAR file. Exiting.${NC}"
+                exit 1
+            fi
+        fi
+
+        break
     done
 
-    # Set server jar name based on the user's choice
-    SERVER_JAR="$MINECRAFT_DIR/$SERVER_SOFTWARE-$SERVER_VERSION.jar"
-
-    # Write Minecraft server type and version to a text file
     echo "Minecraft Server Type: $SERVER_SOFTWARE" | sudo tee "$MINECRAFT_DIR/server_info.txt" > /dev/null 2>&1
     echo "Minecraft Server Version: $SERVER_VERSION" | sudo tee -a "$MINECRAFT_DIR/server_info.txt" > /dev/null 2>&1
 }
+
 
 # Function to install Minecraft server
 function install {
