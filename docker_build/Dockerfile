@@ -11,18 +11,19 @@ RUN apk add --no-cache git
 RUN go install github.com/itzg/rcon-cli@latest
 
 # Stage 2: Create image for Minecraft server
-FROM alpine:3
+FROM alpine:3.18.2
 
 # Copy rcon-cli from the builder stage
 COPY --from=builder /go/bin/rcon-cli /usr/local/bin/rcon-cli
 
-# Install required packages
-RUN apk add --no-cache bash jq curl wget openjdk21-jre-headless openjdk17-jre-headless openjdk8-jre
+# Install required packages and update OpenSSL to the latest version
+RUN apk add --no-cache bash jq curl wget openjdk21-jre-headless openjdk17-jre-headless openjdk8-jre && \
+    apk add --no-cache --upgrade openssl
 
 # Create a non-root user
 RUN addgroup -S minecraft && adduser -S -G minecraft minecraft
 
-# Copy the installation script and set permissions\
+# Copy the installation script and set permissions
 COPY ./install-docker.sh /install-docker.sh
 RUN chmod +x /install-docker.sh
 
