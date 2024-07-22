@@ -2,7 +2,7 @@
 # This is my first time making a docker image, so feel free to make make changes
 
 # Stage 1: Build and get rcon-cli
-FROM golang:alpine AS builder
+FROM golang:1.22.5-alpine3.20 AS builder
 
 # Install necessary build dependencies
 RUN apk add --no-cache git
@@ -11,14 +11,13 @@ RUN apk add --no-cache git
 RUN go install github.com/itzg/rcon-cli@latest
 
 # Stage 2: Create image for Minecraft server
-FROM alpine:3.18.2
+FROM alpine:3.20
 
 # Copy rcon-cli from the builder stage
 COPY --from=builder /go/bin/rcon-cli /usr/local/bin/rcon-cli
 
-# Install required packages and update OpenSSL to the latest version
-RUN apk add --no-cache bash jq curl wget openjdk21-jre-headless openjdk17-jre-headless openjdk8-jre && \
-    apk add --no-cache --upgrade openssl
+# Install required packages
+RUN apk add --no-cache bash jq curl wget openjdk17-jre-headless openjdk8-jre
 
 # Create a non-root user
 RUN addgroup -S minecraft && adduser -S -G minecraft minecraft
